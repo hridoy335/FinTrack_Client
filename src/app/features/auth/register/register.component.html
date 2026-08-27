@@ -1,0 +1,51 @@
+<h1>Create account</h1>
+
+@if (errorMessage()) {
+  <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-row">
+    <div class="ft-field">
+      <label for="firstName">First name</label>
+      <input id="firstName" formControlName="firstName" />
+    </div>
+    <div class="ft-field">
+      <label for="lastName">Last name</label>
+      <input id="lastName" formControlName="lastName" />
+    </div>
+  </div>
+
+  <div class="ft-field">
+    <label for="userName">Username</label>
+    <input id="userName" formControlName="userName" />
+  </div>
+
+  <div class="ft-field">
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+  </div>
+
+  <div class="ft-field">
+    <label for="password">Password</label>
+    <input id="password" type="password" formControlName="password" />
+  </div>
+
+  <div class="ft-field">
+    <label for="currencyCode">Currency</label>
+    <select id="currencyCode" formControlName="currencyCode">
+      <option value="BDT">BDT</option>
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+    </select>
+  </div>
+
+  <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
+    {{ submitting() ? 'Creating…' : 'Register' }}
+  </button>
+</form>
+
+<p class="auth-footer">
+  Already have an account?
+  <a routerLink="/auth/login">Sign in</a>
+</p>

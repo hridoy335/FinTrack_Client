@@ -1,0 +1,20 @@
+<header class="app-header">
+  <span class="app-brand">FinTrack</span>
+  <div class="app-header-right">
+    @if (user(); as u) {
+      <span>{{ u.firstName }}</span>
+      <span class="app-badge">{{ u.currencyCode }}</span>
+    }
+    <button type="button" class="ft-btn ft-btn--ghost" (click)="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="app-sidebar">
+    <a routerLink="/app/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/app/profile" routerLinkActive="active">Profile</a>
+  </aside>
+  <main class="app-content">
+    <router-outlet />
+  </main>
+</div>

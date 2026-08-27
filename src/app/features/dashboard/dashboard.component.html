@@ -1,0 +1,44 @@
+<header class="page-head">
+  <h1 class="ft-page-title">Hello, {{ user()?.firstName }}</h1>
+  <p>{{ today | date: 'mediumDate' }}</p>
+</header>
+
+<section class="ft-grid ft-grid--4 summary-cards">
+  <article class="ft-card">
+    <span>Total Balance</span>
+    <strong>—</strong>
+  </article>
+  <article class="ft-card">
+    <span>Income</span>
+    <strong>—</strong>
+  </article>
+  <article class="ft-card">
+    <span>Expense</span>
+    <strong>—</strong>
+  </article>
+  <article class="ft-card">
+    <span>Net</span>
+    <strong>—</strong>
+  </article>
+</section>
+
+<section class="ft-card accounts-panel">
+  <h2>Accounts</h2>
+
+  @if (loadError()) {
+    <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+  } @else if (loading()) {
+    <p class="ft-muted">Loading…</p>
+  } @else if (accounts().length === 0) {
+    <p class="ft-muted">No accounts found.</p>
+  } @else {
+    <ul>
+      @for (account of accounts(); track account.id) {
+        <li>
+          <span>{{ account.accountName }} ({{ account.accountCode }})</span>
+          <span class="ft-muted">{{ user()?.currencyCode }} —</span>
+        </li>
+      }
+    </ul>
+  }
+</section>

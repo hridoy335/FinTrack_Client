@@ -1,0 +1,26 @@
+<h1>Sign in</h1>
+
+@if (errorMessage()) {
+  <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+}
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="ft-field">
+    <label for="userNameOrEmail">Username or email</label>
+    <input id="userNameOrEmail" formControlName="userNameOrEmail" autocomplete="username" />
+  </div>
+
+  <div class="ft-field">
+    <label for="password">Password</label>
+    <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+  </div>
+
+  <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
+    {{ submitting() ? 'Signing in…' : 'Sign in' }}
+  </button>
+</form>
+
+<p class="auth-footer">
+  No account?
+  <a routerLink="/auth/register">Register</a>
+</p>
