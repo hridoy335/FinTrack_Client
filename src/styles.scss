@@ -1,3 +1,5 @@
+@use 'app/styles/app-pages';
+
 :root {
   --ft-primary: #1565c0;
   --ft-primary-dark: #0d47a1;
@@ -7,6 +9,7 @@
   --ft-border: #e0e0e0;
   --ft-radius: 8px;
   --ft-expense: #c62828;
+  --ft-income: #2e7d32;
 }
 
 *,

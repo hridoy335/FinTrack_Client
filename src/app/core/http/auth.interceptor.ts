@@ -5,10 +5,19 @@ import { catchError, switchMap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../auth/auth.service';
 
+function isApiRequest(url: string): boolean {
+  if (url.startsWith('/api')) {
+    return true;
+  }
+
+  const base = environment.apiBaseUrl;
+  return !!base && url.startsWith(base);
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   const token = auth.accessToken();
-  const isApi = req.url.startsWith(environment.apiBaseUrl);
+  const isApi = isApiRequest(req.url);
   const isPublic = /\/api\/Auths\//.test(req.url) || /\/api\/UserInfos$/.test(req.url);
 
   const authReq =

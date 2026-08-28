@@ -1,44 +1,218 @@
-<header class="page-head">
-  <h1 class="ft-page-title">Hello, {{ user()?.firstName }}</h1>
-  <p>{{ today | date: 'mediumDate' }}</p>
+<div class="dash-page">
+<header class="dash-header">
+  <div class="dash-header-left">
+    <h1>{{ greeting() }}, {{ user()?.firstName }}! 👋</h1>
+    <p>Here's what's happening with your finances today.</p>
+  </div>
+
+  @if (years().length > 0) {
+    <div class="dash-header-filter">
+      <select
+        id="financialYear"
+        class="dash-select"
+        [value]="effectiveYearId() ?? ''"
+        (change)="onYearChange($event)"
+      >
+        @for (year of years(); track year.id) {
+          <option [value]="year.id">{{ year.name }}</option>
+        }
+      </select>
+    </div>
+  }
 </header>
 
-<section class="ft-grid ft-grid--4 summary-cards">
-  <article class="ft-card">
-    <span>Total Balance</span>
-    <strong>—</strong>
-  </article>
-  <article class="ft-card">
-    <span>Income</span>
-    <strong>—</strong>
-  </article>
-  <article class="ft-card">
-    <span>Expense</span>
-    <strong>—</strong>
-  </article>
-  <article class="ft-card">
-    <span>Net</span>
-    <strong>—</strong>
-  </article>
-</section>
-
-<section class="ft-card accounts-panel">
-  <h2>Accounts</h2>
-
-  @if (loadError()) {
+@if (loadError()) {
+  <div class="dash-error">
     <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
-  } @else if (loading()) {
-    <p class="ft-muted">Loading…</p>
-  } @else if (accounts().length === 0) {
-    <p class="ft-muted">No accounts found.</p>
-  } @else {
-    <ul>
-      @for (account of accounts(); track account.id) {
-        <li>
-          <span>{{ account.accountName }} ({{ account.accountCode }})</span>
-          <span class="ft-muted">{{ user()?.currencyCode }} —</span>
-        </li>
+    <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+  </div>
+} @else if (loading()) {
+  <div class="dash-loading">Loading your finances…</div>
+} @else if (dashboard(); as d) {
+  <section class="dash-kpis">
+    <article class="dash-kpi">
+      <div class="dash-kpi-icon dash-kpi-icon--balance">💰</div>
+      <div>
+        <span class="dash-kpi-label">Total Balance</span>
+        <div class="dash-kpi-value">{{ d.totalBalance | currency: currency() }}</div>
+        <span class="dash-kpi-sub">Assets − liabilities</span>
+      </div>
+    </article>
+    <article class="dash-kpi">
+      <div class="dash-kpi-icon dash-kpi-icon--income">📈</div>
+      <div>
+        <span class="dash-kpi-label">Total Income</span>
+        <div class="dash-kpi-value dash-kpi-value--green">{{ d.incomeThisMonth | currency: currency() }}</div>
+        <span class="dash-kpi-sub">This month</span>
+      </div>
+    </article>
+    <article class="dash-kpi">
+      <div class="dash-kpi-icon dash-kpi-icon--expense">📉</div>
+      <div>
+        <span class="dash-kpi-label">Total Expense</span>
+        <div class="dash-kpi-value dash-kpi-value--red">{{ d.expenseThisMonth | currency: currency() }}</div>
+        <span class="dash-kpi-sub">This month</span>
+      </div>
+    </article>
+    <article class="dash-kpi">
+      <div class="dash-kpi-icon dash-kpi-icon--savings">🏦</div>
+      <div>
+        <span class="dash-kpi-label">Net Savings</span>
+        <div
+          class="dash-kpi-value"
+          [class.dash-kpi-value--green]="d.netThisMonth >= 0"
+          [class.dash-kpi-value--red]="d.netThisMonth < 0"
+        >
+          {{ d.netThisMonth | currency: currency() }}
+        </div>
+        <span class="dash-kpi-sub">This month</span>
+      </div>
+    </article>
+  </section>
+
+  <div class="dash-row dash-row--2">
+    <section class="dash-card">
+      <div class="dash-card-head">
+        <h2>Spending Overview</h2>
+        <span class="dash-chip">This month</span>
+      </div>
+
+      @if (donutSegments().length === 0) {
+        <div class="dash-empty dash-empty--compact">
+          <p>No expense categories yet.</p>
+        </div>
+      } @else {
+        <div class="dash-donut-wrap">
+          <div class="dash-donut" [style.background]="donutGradient()">
+            <div class="dash-donut-hole">
+              <span>Total Expense</span>
+              <strong>{{ totalExpenseBreakdown() | currency: currency() }}</strong>
+            </div>
+          </div>
+          <ul class="dash-legend">
+            @for (seg of donutSegments(); track seg.coaId) {
+              <li>
+                <span class="dash-legend-dot" [style.background]="seg.color"></span>
+                <span class="dash-legend-name">{{ seg.accountName }}</span>
+                <span class="dash-legend-pct">{{ seg.pct | number: '1.0-0' }}%</span>
+              </li>
+            }
+          </ul>
+        </div>
       }
-    </ul>
+    </section>
+
+    <section class="dash-card">
+      <div class="dash-card-head">
+        <h2>Recent Transactions</h2>
+        <span class="dash-link-soon">View all</span>
+      </div>
+
+      @if (transactionsLoading()) {
+        <p class="ft-muted">Loading…</p>
+      } @else if (transactions().length === 0) {
+        <div class="dash-empty dash-empty--compact">
+          <p>No transactions yet.</p>
+        </div>
+      } @else {
+        <ul class="dash-tx-list">
+          @for (tx of transactions(); track tx.id) {
+            <li class="dash-tx-item">
+              <span class="dash-tx-icon">{{ txIcon(tx.transactionType?.code) }}</span>
+              <div class="dash-tx-body">
+                <strong>{{ tx.description || tx.transactionType?.name || 'Transaction' }}</strong>
+                <span>{{ tx.transactionType?.name }} · {{ txRelativeDate(tx.transactionDate) }}</span>
+              </div>
+              <span
+                class="dash-tx-amt"
+                [class.dash-tx-amt--income]="tx.transactionType?.code === 'INCOME'"
+                [class.dash-tx-amt--expense]="tx.transactionType?.code === 'EXPENSE'"
+              >
+                {{ txAmountPrefix(tx.transactionType?.code) }}{{ tx.amount | currency: currency() }}
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  <div class="dash-row dash-row--3">
+    <section class="dash-card">
+      <div class="dash-card-head">
+        <h2>Accounts Overview</h2>
+      </div>
+      @if (walletAccounts().length === 0) {
+        <p class="ft-muted">No accounts found.</p>
+      } @else {
+        <ul class="dash-acct-list">
+          @for (account of walletAccounts(); track account.coaId) {
+            <li class="dash-acct-item">
+              <span [class]="accountIconClass(account.accountCode)">
+                {{ accountIconLabel(account.accountCode, account.accountName) }}
+              </span>
+              <div>
+                <strong>{{ account.accountName }}</strong>
+                <span>{{ account.accountCode }} · {{ account.accountTypeCode }}</span>
+              </div>
+              <strong class="dash-acct-amt">{{ account.balance | currency: currency() }}</strong>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="dash-card">
+      <div class="dash-card-head">
+        <h2>Monthly Trend</h2>
+        <span class="dash-chip">{{ selectedYearLabel() }}</span>
+      </div>
+      <div class="dash-trend-placeholder">
+        <div class="dash-trend-bars">
+          @for (m of ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']; track m) {
+            <div class="dash-trend-col">
+              <div class="dash-trend-bar dash-trend-bar--ghost"></div>
+              <span>{{ m }}</span>
+            </div>
+          }
+        </div>
+        <p class="ft-muted">Trend chart unlocks as you add more monthly data.</p>
+      </div>
+    </section>
+
+    <section class="dash-card">
+      <div class="dash-card-head">
+        <h2>Budget Status</h2>
+      </div>
+      @if (expenseBreakdown().length === 0) {
+        <p class="ft-muted">Set up budgets when the feature is available.</p>
+      } @else {
+        <ul class="dash-budget-list">
+          @for (item of expenseBreakdown().slice(0, 4); track item.coaId) {
+            <li class="dash-budget-item">
+              <div class="dash-budget-head">
+                <span>{{ item.accountName }}</span>
+                <span>{{ item.balance | currency: currency() }}</span>
+              </div>
+              <div class="dash-budget-track">
+                <div
+                  class="dash-budget-fill"
+                  [style.width.%]="budgetPlaceholderPct(item.balance, item.balance * 1.2)"
+                ></div>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  @if (smartTip()) {
+    <section class="dash-tip">
+      <span class="dash-tip-icon">💡</span>
+      <p>{{ smartTip() }}</p>
+      <span class="dash-tip-trophy" aria-hidden="true">🏆</span>
+    </section>
   }
-</section>
+}
+</div>

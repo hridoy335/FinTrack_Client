@@ -25,6 +25,10 @@ export function toAppError(err: unknown): Error {
       return new Error('Cannot reach the server. Is the API running?');
     }
 
+    if (err.status === 404) {
+      return new Error('API not found. Start the backend on http://localhost:5027 (http launch profile).');
+    }
+
     if (err.status === 401) {
       return new Error('Session expired. Please sign in again.');
     }
