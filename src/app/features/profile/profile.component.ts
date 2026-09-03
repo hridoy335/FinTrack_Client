@@ -1,24 +1,115 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component,computed, effect,inject,signal} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { finalize, throwError } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
+import { ProfileService } from './profile.service';
 
 @Component({
   selector: 'app-profile',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <h1 class="ft-page-title">Profile</h1>
-    @if (user(); as u) {
-      <div class="ft-card profile-box">
-        <p><strong>Name:</strong> {{ u.firstName }} {{ u.lastName }}</p>
-        <p><strong>Username:</strong> {{ u.userName }}</p>
-        <p><strong>Email:</strong> {{ u.email }}</p>
-        <p><strong>Currency:</strong> {{ u.currencyCode }}</p>
-      </div>
-    } @else {
-      <p class="ft-muted">No profile loaded.</p>
-    }
-  `
+  imports: [ReactiveFormsModule, DatePipe],
+  templateUrl: './profile.component.html'
 })
+
 export class ProfileComponent {
-  protected readonly user = inject(AuthService).user;
+
+  private readonly profileService = inject(ProfileService);
+  private readonly auth = inject(AuthService);
+  private readonly fb = inject(FormBuilder);
+
+
+  protected readonly submitting = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly successMessage = signal<string | null>(null);
+
+  protected readonly form = this.fb.nonNullable.group({
+
+    firstName: ['', Validators.required],
+    lastName: [''],
+    userName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    currencyCode: ['BDT', Validators.required]
+  });
+
+  protected readonly profileResource = rxResource({
+
+    params: () => ({ userId: this.auth.user()?.id ?? null }),
+    stream: ({ params }) => {
+      if (params.userId == null) {
+        return throwError(() => new Error('Not signed in.'));
+      }
+      return this.profileService.getByUserId(params.userId);
+    }
+
+  });
+
+
+
+  protected readonly profile = computed(() => this.profileResource.value());
+  protected readonly loading = computed(() => this.profileResource.isLoading());
+  protected readonly loadError = computed(() => {
+    const err = this.profileResource.error();
+    return err instanceof Error ? err.message : err ? String(err) : null;
+  });
+
+
+  constructor() {
+    effect(() => {
+      const p = this.profile();
+      if (!p) return;
+      this.form.patchValue({
+        firstName: p.firstName,
+        lastName: p.lastName ?? '',
+        userName: p.userName,
+        email: p.email,
+        currencyCode: p.currencyCode
+      });
+    });
+
+  }
+
+
+
+ async submit(): Promise<any> {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const p = this.profile();
+    if (!p) return;
+
+    this.submitting.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    const v = this.form.getRawValue();
+
+    this.profileService
+      .update(p.id, {
+        firstName: v.firstName,
+        lastName: v.lastName || null,
+        userName: v.userName,
+        email: v.email,
+        currencyCode: v.currencyCode,
+        isActive: p.isActive
+      })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.successMessage.set('Profile updated successfully.');
+          this.profileResource.reload();
+        },
+        error: (err: Error) => this.errorMessage.set(err.message)
+
+      });
+  }
+
+  protected retry(): any {
+    this.profileResource.reload();
+  }
+
 }
+
+

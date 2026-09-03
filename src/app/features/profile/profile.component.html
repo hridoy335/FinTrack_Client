@@ -1,0 +1,83 @@
+<div class="profile-page">
+  <header class="profile-header">
+    <h1>Profile</h1>
+    <p>Update your account details.</p>
+  </header>
+
+  @if (loadError()) {
+    <div class="profile-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="profile-loading">Loading profile…</div>
+  } @else if (profile(); as p) {
+    @if (successMessage()) {
+      <p class="ft-alert ft-alert--success">{{ successMessage() }}</p>
+    }
+    @if (errorMessage()) {
+      <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+    }
+
+    <div class="profile-grid">
+      <section class="profile-card">
+        <h2>Account info</h2>
+        <dl class="profile-meta">
+          <div>
+            <dt>Member since</dt>
+            <dd>{{ p.createdDate | date: 'MMM d, y' }}</dd>
+          </div>
+          @if (p.updatedDate) {
+            <div>
+              <dt>Last updated</dt>
+              <dd>{{ p.updatedDate | date: 'MMM d, y' }}</dd>
+            </div>
+          }
+          <div>
+            <dt>Status</dt>
+            <dd>{{ p.isActive ? 'Active' : 'Inactive' }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="profile-card profile-card--form">
+        <h2>Edit profile</h2>
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <div class="profile-form-row">
+            <div class="ft-field">
+              <label for="firstName">First name</label>
+              <input id="firstName" formControlName="firstName" autocomplete="given-name" />
+            </div>
+            <div class="ft-field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" formControlName="lastName" autocomplete="family-name" />
+            </div>
+          </div>
+
+          <div class="ft-field">
+            <label for="userName">Username</label>
+            <input id="userName" formControlName="userName" autocomplete="username" />
+          </div>
+
+          <div class="ft-field">
+            <label for="email">Email</label>
+            <input id="email" type="email" formControlName="email" autocomplete="email" />
+          </div>
+
+          <div class="ft-field">
+            <label for="currencyCode">Currency</label>
+            <select id="currencyCode" formControlName="currencyCode">
+              <option value="BDT">BDT — Bangladeshi Taka</option>
+              <option value="USD">USD — US Dollar</option>
+              <option value="EUR">EUR — Euro</option>
+            </select>
+          </div>
+
+          <button type="submit" class="ft-btn ft-btn--primary profile-save" [disabled]="submitting()">
+            {{ submitting() ? 'Saving…' : 'Save changes' }}
+          </button>
+        </form>
+      </section>
+    </div>
+  }
+</div>

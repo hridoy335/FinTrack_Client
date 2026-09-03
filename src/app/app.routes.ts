@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 
 import { authGuard, guestGuard } from './core/auth/auth.guard';
 
+const transactionFormRoute = (mode: string) => ({
+  loadComponent: () =>
+    import('./features/transactions/transaction-form.component').then(
+      (m) => m.TransactionFormComponent
+    ),
+  data: { mode }
+});
+
 export const routes: Routes = [
   {
     path: '',
@@ -46,10 +54,60 @@ export const routes: Routes = [
           import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent)
       },
       {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/reports/reports-hub.component').then((m) => m.ReportsHubComponent)
+      },
+      {
+        path: 'reports/cashflow',
+        loadComponent: () =>
+          import('./features/reports/cashflow-report.component').then((m) => m.CashflowReportComponent)
+      },
+      {
+        path: 'reports/balance',
+        loadComponent: () =>
+          import('./features/reports/balance-report.component').then((m) => m.BalanceReportComponent)
+      },
+      {
+        path: 'reports/account-statement',
+        loadComponent: () =>
+          import('./features/reports/account-statement-report.component').then(
+            (m) => m.AccountStatementReportComponent
+          )
+      },
+      {
+        path: 'reports/monthly-cashflow',
+        loadComponent: () =>
+          import('./features/reports/monthly-cashflow-report.component').then(
+            (m) => m.MonthlyCashflowReportComponent
+          )
+      },
+      {
+        path: 'coa',
+        loadComponent: () =>
+          import('./features/coa/coa-list.component').then((m) => m.CoaListComponent)
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent)
       },
+      {
+        path: 'transactions',
+        loadComponent: () =>
+          import('./features/transactions/transactions-list.component').then(
+            (m) => m.TransactionsListComponent
+          )
+      },
+      { path: 'transactions/income', ...transactionFormRoute('income') },
+      { path: 'transactions/expense', ...transactionFormRoute('expense') },
+      { path: 'transactions/transfer', ...transactionFormRoute('transfer') },
+      { path: 'transactions/new', redirectTo: 'transactions/expense', pathMatch: 'full' },
+      { path: 'loans', redirectTo: 'loans/borrow', pathMatch: 'full' },
+      { path: 'loans/borrow', ...transactionFormRoute('loan-borrow') },
+      { path: 'loans/repay', ...transactionFormRoute('loan-repay') },
+      { path: 'loans/lend', ...transactionFormRoute('loan-lend') },
+      { path: 'loans/collect', ...transactionFormRoute('loan-collect') },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

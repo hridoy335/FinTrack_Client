@@ -17,6 +17,7 @@ export class RegisterComponent {
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
+  protected readonly showPassword = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
@@ -25,7 +26,8 @@ export class RegisterComponent {
     userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
-    currencyCode: ['BDT', Validators.required]
+    currencyCode: ['BDT', Validators.required],
+    agreeTerms: [false, Validators.requiredTrue]
   });
 
   submit(): void {

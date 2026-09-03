@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
 
-import { ApiResponse } from '../models';
+import { ApiResponse } from '../api.model';
 
 /** Maps HTTP / API failures to a plain Error with a user-facing message. */
 export const errorInterceptor: HttpInterceptorFn = (req, next) =>

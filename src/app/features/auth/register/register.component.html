@@ -1,51 +1,122 @@
-<h1>Create account</h1>
+<div class="auth-card auth-card--register">
+  <div class="auth-card-badge" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4.2 0-8 2.1-8 4.7V21h16v-2.3c0-2.6-3.8-4.7-8-4.7z"/></svg>
+  </div>
 
-@if (errorMessage()) {
-  <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
-}
+  <h1>Create your account</h1>
+  <p class="auth-card-sub">Fill in the details below to get started.</p>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div class="form-row">
-    <div class="ft-field">
-      <label for="firstName">First name</label>
-      <input id="firstName" formControlName="firstName" />
+  @if (errorMessage()) {
+    <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-row">
+      <div class="auth-field">
+        <label for="firstName">First name</label>
+        <div class="auth-input">
+          <span class="auth-input-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4.2 0-8 2.1-8 4.7V21h16v-2.3c0-2.6-3.8-4.7-8-4.7z"/></svg>
+          </span>
+          <input id="firstName" formControlName="firstName" placeholder="First name" autocomplete="given-name" />
+        </div>
+      </div>
+      <div class="auth-field">
+        <label for="lastName">Last name</label>
+        <div class="auth-input">
+          <span class="auth-input-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4.2 0-8 2.1-8 4.7V21h16v-2.3c0-2.6-3.8-4.7-8-4.7z"/></svg>
+          </span>
+          <input id="lastName" formControlName="lastName" placeholder="Last name" autocomplete="family-name" />
+        </div>
+      </div>
     </div>
-    <div class="ft-field">
-      <label for="lastName">Last name</label>
-      <input id="lastName" formControlName="lastName" />
+
+    <div class="auth-field">
+      <label for="userName">Username</label>
+      <div class="auth-input">
+        <span class="auth-input-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2c-4.2 0-8 2.1-8 4.7V21h16v-2.3c0-2.6-3.8-4.7-8-4.7z"/></svg>
+        </span>
+        <input id="userName" formControlName="userName" placeholder="Choose a username" autocomplete="username" />
+      </div>
     </div>
-  </div>
 
-  <div class="ft-field">
-    <label for="userName">Username</label>
-    <input id="userName" formControlName="userName" />
-  </div>
+    <div class="auth-field">
+      <label for="email">Email</label>
+      <div class="auth-input">
+        <span class="auth-input-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5L4 8V6l8 5 8-5z"/></svg>
+        </span>
+        <input id="email" type="email" formControlName="email" placeholder="Enter your email" autocomplete="email" />
+      </div>
+    </div>
 
-  <div class="ft-field">
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" />
-  </div>
+    <div class="auth-field">
+      <label for="password">Password</label>
+      <div class="auth-input">
+        <span class="auth-input-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
+        </span>
+        <input
+          id="password"
+          [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="At least 8 characters"
+          autocomplete="new-password"
+        />
+        <button
+          type="button"
+          class="auth-eye"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+        >
+          @if (showPassword()) {
+            <svg viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 1 1 5-5 5 5 0 0 1-5 5zm0-8a3 3 0 1 0 3 3 3 3 0 0 0-3-3z"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24"><path d="M2 4.3 3.3 3l18 18-1.3 1.3-3.1-3.1A12.7 12.7 0 0 1 12 19C5 19 2 12 2 12a20.4 20.4 0 0 1 5.2-5.9zm7.4 7.4A3 3 0 0 0 12 15a3 3 0 0 0 3-3 3 3 0 0 0-.3-1.3zM12 5c7 0 10 7 10 7a20.7 20.7 0 0 1-3.8 4.7l-1.5-1.5A12.4 12.4 0 0 0 20.9 12S18.2 7 12 7a10.6 10.6 0 0 0-3.3.5L6.9 5.7A13.4 13.4 0 0 1 12 5z"/></svg>
+          }
+        </button>
+      </div>
+    </div>
 
-  <div class="ft-field">
-    <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password" />
-  </div>
+    <div class="auth-field">
+      <label for="currencyCode">Currency</label>
+      <div class="auth-input">
+        <span class="auth-input-ico auth-input-ico--text" aria-hidden="true">৳</span>
+        <select id="currencyCode" formControlName="currencyCode">
+          <option value="BDT">BDT — Bangladeshi Taka</option>
+          <option value="USD">USD — US Dollar</option>
+          <option value="EUR">EUR — Euro</option>
+        </select>
+      </div>
+    </div>
 
-  <div class="ft-field">
-    <label for="currencyCode">Currency</label>
-    <select id="currencyCode" formControlName="currencyCode">
-      <option value="BDT">BDT</option>
-      <option value="USD">USD</option>
-      <option value="EUR">EUR</option>
-    </select>
-  </div>
+    <label class="auth-agree">
+      <input type="checkbox" formControlName="agreeTerms" />
+      <span>
+        I agree to the
+        <a href="#terms" (click)="$event.preventDefault()">Terms of Service</a>
+        and
+        <a href="#privacy" (click)="$event.preventDefault()">Privacy Policy</a>.
+      </span>
+    </label>
+    @if (form.controls.agreeTerms.touched && form.controls.agreeTerms.invalid) {
+      <p class="auth-field-error">Please accept the terms to continue.</p>
+    }
 
-  <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
-    {{ submitting() ? 'Creating…' : 'Register' }}
-  </button>
-</form>
+    <button type="submit" class="auth-submit" [disabled]="submitting()">
+      {{ submitting() ? 'Creating…' : 'Register' }}
+      @if (!submitting()) {
+        <span aria-hidden="true">→</span>
+      }
+    </button>
+  </form>
 
-<p class="auth-footer">
-  Already have an account?
-  <a routerLink="/auth/login">Sign in</a>
-</p>
+  <div class="auth-divider"><span>or</span></div>
+
+  <p class="auth-switch">
+    Already have an account?
+    <a routerLink="/auth/login">Sign in</a>
+  </p>
+</div>

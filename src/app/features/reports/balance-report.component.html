@@ -1,0 +1,84 @@
+<div class="report-page">
+  <header class="report-header">
+    <a routerLink="/app/reports" class="report-back">← All reports</a>
+    <h1>Balance report</h1>
+    <p>Assets, liabilities, equity, and net worth.</p>
+  </header>
+
+  <section class="report-card report-filters">
+    <div class="report-filter-row">
+      @if (years().length > 0) {
+        <div class="ft-field">
+          <label for="balYear">Financial year</label>
+          <select id="balYear" [value]="effectiveYearId() || ''" (change)="onYearChange($event)">
+            @for (year of years(); track year.id) {
+              <option [value]="year.id">{{ year.name }}</option>
+            }
+          </select>
+        </div>
+      }
+      <div class="ft-field">
+        <label for="balAsOf">As of date</label>
+        <input id="balAsOf" type="date" [value]="asOfDate()" (input)="asOfDate.set($any($event.target).value)" />
+      </div>
+      <button type="button" class="ft-btn ft-btn--primary report-run-btn" (click)="runReport()">
+        Run report
+      </button>
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <div class="report-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="report-loading">Generating report…</div>
+  } @else if (report(); as data) {
+    <p class="report-period">As of {{ formatReportDate(data.asOfDate) }}</p>
+
+    <div class="report-kpi-row">
+      <div class="report-kpi report-kpi--income">
+        <span>Total assets</span>
+        <strong>{{ data.totalAssets | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi report-kpi--expense">
+        <span>Total liabilities</span>
+        <strong>{{ data.totalLiabilities | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi">
+        <span>Net worth</span>
+        <strong>{{ data.netWorth | currency: currency() }}</strong>
+      </div>
+    </div>
+
+    @for (section of data.sections; track section.accountTypeId) {
+      <section class="report-card">
+        <div class="report-section-head">
+          <span [class]="sectionBadgeClass(section.accountTypeCode)">{{ section.accountTypeName }}</span>
+          <strong>{{ section.subtotal | currency: currency() }}</strong>
+        </div>
+        @if (section.accounts.length === 0) {
+          <p class="report-empty">No accounts with activity.</p>
+        } @else {
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th class="report-num">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (account of section.accounts; track account.coaId) {
+                <tr>
+                  <td>{{ account.accountName }} <span class="report-code">({{ account.accountCode }})</span></td>
+                  <td class="report-num">{{ account.balance | currency: currency() }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    }
+  }
+</div>

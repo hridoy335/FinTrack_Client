@@ -21,6 +21,13 @@
   }
 </header>
 
+<div class="dash-quick-actions">
+  <a routerLink="/app/transactions/income" class="dash-quick dash-quick--income">+ Income</a>
+  <a routerLink="/app/transactions/expense" class="dash-quick dash-quick--expense">+ Expense</a>
+  <a routerLink="/app/transactions/transfer" class="dash-quick dash-quick--transfer">+ Transfer</a>
+  <a routerLink="/app/loans/borrow" class="dash-quick dash-quick--loan">+ Borrow</a>
+</div>
+
 @if (loadError()) {
   <div class="dash-error">
     <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
@@ -79,7 +86,7 @@
 
       @if (donutSegments().length === 0) {
         <div class="dash-empty dash-empty--compact">
-          <p>No expense categories yet.</p>
+          <p>No expenses recorded this month.</p>
         </div>
       } @else {
         <div class="dash-donut-wrap">
@@ -105,7 +112,7 @@
     <section class="dash-card">
       <div class="dash-card-head">
         <h2>Recent Transactions</h2>
-        <span class="dash-link-soon">View all</span>
+        <a routerLink="/app/transactions" class="dash-link">View all</a>
       </div>
 
       @if (transactionsLoading()) {

@@ -1,0 +1,53 @@
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { ApiEndpoints, apiUrl } from '../../core/api/api-endpoints';
+import { ApiService } from '../../core/http/api.service';
+import {
+  AccountStatementReport,
+  BalanceReport,
+  CashflowReport,
+  FinancialYear,
+  MonthlyCashflowReport
+} from './report.model';
+
+@Injectable({ providedIn: 'root' })
+export class ReportService {
+  private readonly api = inject(ApiService);
+
+  getFinancialYears(): Observable<FinancialYear[]> {
+    return this.api.get<FinancialYear[]>(ApiEndpoints.financialYears);
+  }
+
+  getCashflow(params: {
+    financialYearId?: number;
+    fromDate?: string;
+    toDate?: string;
+  }): Observable<CashflowReport> {
+    return this.api.get<CashflowReport>(apiUrl(ApiEndpoints.reports.cashflow, params));
+  }
+
+  getBalance(params: {
+    financialYearId?: number;
+    asOfDate?: string;
+  }): Observable<BalanceReport> {
+    return this.api.get<BalanceReport>(apiUrl(ApiEndpoints.reports.balance, params));
+  }
+
+  getAccountStatement(params: {
+    coaId: number;
+    financialYearId?: number;
+    fromDate?: string;
+    toDate?: string;
+  }): Observable<AccountStatementReport> {
+    return this.api.get<AccountStatementReport>(
+      apiUrl(ApiEndpoints.reports.accountStatement, params)
+    );
+  }
+
+  getMonthlyCashflow(financialYearId?: number): Observable<MonthlyCashflowReport> {
+    return this.api.get<MonthlyCashflowReport>(
+      apiUrl(ApiEndpoints.reports.monthlyCashflow, { financialYearId })
+    );
+  }
+}

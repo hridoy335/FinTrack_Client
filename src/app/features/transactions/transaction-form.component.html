@@ -1,0 +1,127 @@
+<div class="tx-page tx-page--form" [class]="'tx-page--' + config().theme">
+
+  <header class="tx-form-header">
+
+    <a routerLink="/app/transactions" class="tx-back">← All transactions</a>
+
+    <div class="tx-form-hero">
+
+      <span class="tx-form-icon" aria-hidden="true">{{ config().icon }}</span>
+
+      <div>
+
+        <h1>{{ config().title }}</h1>
+
+        <p>{{ config().subtitle }}</p>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+
+  @if (loadError()) {
+
+  <div class="tx-error">
+
+    <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+
+    <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+
+  </div>
+
+  } @else if (loading()) {
+
+  <div class="tx-loading">Loading form…</div>
+
+  } @else {
+
+  @if (errorMessage()) {
+
+  <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+
+  }
+
+
+
+  <section class="tx-card tx-form-card">
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <div class="tx-form-row">
+
+        <div class="ft-field">
+          <label for="transactionDate">Date</label>
+          <input id="transactionDate" type="date" formControlName="transactionDate" />
+        </div>
+
+        <div class="ft-field">
+          <label for="amount">{{ config().amountLabel }}</label>
+          <input id="amount" type="number" formControlName="amount" min="0.01" step="0.01" placeholder="0.00" />
+        </div>
+
+      </div>
+
+      <div class="ft-field">
+        <label for="description">Description</label>
+        <input id="description" formControlName="description" [placeholder]="config().descriptionPlaceholder" />
+      </div>
+
+      <div class="tx-form-row">
+        <div class="ft-field tx-coa-field">
+          <label for="debitCoaId">{{ config().debitLabel }}</label>
+          <select id="debitCoaId" formControlName="debitCoaId">
+            @for (coa of debitCoas(); track coa.id) {
+            <option [value]="coa.id">{{ coaLabel(coa) }}</option>
+            }
+          </select>
+          <span class="tx-field-hint">{{ config().debitHint }}</span>
+          <app-coa-quick-add [accountTypeId]="config().debitAccountTypeId" [coas]="coas()"
+            [label]="config().debitLabel | lowercase" (created)="onCoaCreated($event, 'debit')" />
+        </div>
+
+        <div class="ft-field tx-coa-field">
+
+          <label for="creditCoaId">{{ config().creditLabel }}</label>
+          <select id="creditCoaId" formControlName="creditCoaId">
+            @for (coa of creditCoas(); track coa.id) {
+            <option [value]="coa.id">{{ coaLabel(coa) }}</option>
+            }
+          </select>
+
+          <span class="tx-field-hint">{{ config().creditHint }}</span>
+          <app-coa-quick-add [accountTypeId]="config().creditAccountTypeId" [coas]="coas()"
+            [label]="config().creditLabel | lowercase" (created)="onCoaCreated($event, 'credit')" />
+        </div>
+      </div>
+
+
+
+      <details class="tx-advanced">
+        <summary>Advanced options</summary>
+        <div class="ft-field">
+          <label for="financialYearId">Financial year</label>
+          <select id="financialYearId" formControlName="financialYearId">
+            @for (year of years(); track year.id) {
+            <option [value]="year.id" [disabled]="!year.isActive || year.isClosed">
+              {{ year.name }}{{ year.isClosed ? ' (closed)' : '' }}
+            </option>
+            }
+          </select>
+        </div>
+      </details>
+
+
+
+      <div class="tx-form-actions">
+        <a routerLink="/app/transactions" class="ft-btn ft-btn--secondary">Cancel</a>
+        <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
+          {{ submitting() ? 'Saving…' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </section>
+  }
+</div>

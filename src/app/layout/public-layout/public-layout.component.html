@@ -1,11 +1,27 @@
-<header class="public-top">
-  <a routerLink="/" class="public-brand">FinTrack</a>
-  <nav>
-    <a routerLink="/auth/login" class="ft-btn ft-btn--ghost">Login</a>
-    <a routerLink="/auth/register" class="ft-btn ft-btn--primary">Get Started</a>
+<header class="lp-top">
+  <a routerLink="/" class="lp-brand">
+    <span class="lp-brand-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-6h3v6h-3z"/></svg>
+    </span>
+    <span class="lp-brand-copy">
+      <strong>FinTrack</strong>
+      <small>Your Money, Your Control</small>
+    </span>
+  </a>
+
+  <nav class="lp-nav" aria-label="Landing">
+    <a href="#features">Features</a>
+    <a href="#how-it-works">How it Works</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#about">About</a>
   </nav>
+
+  <div class="lp-top-actions">
+    <a routerLink="/auth/login" class="lp-btn lp-btn--ghost">Login</a>
+    <a routerLink="/auth/register" class="lp-btn lp-btn--primary">Register</a>
+  </div>
 </header>
 
-<main class="public-main">
+<main class="lp-main">
   <router-outlet />
 </main>

@@ -1,0 +1,111 @@
+<div class="report-page">
+  <header class="report-header">
+    <a routerLink="/app/reports" class="report-back">← All reports</a>
+    <h1>Cashflow report</h1>
+    <p>Income and expense totals for the selected period.</p>
+  </header>
+
+  <section class="report-card report-filters">
+    <div class="report-filter-row">
+      @if (years().length > 0) {
+        <div class="ft-field">
+          <label for="cfYear">Financial year</label>
+          <select id="cfYear" [value]="effectiveYearId() || ''" (change)="onYearChange($event)">
+            @for (year of years(); track year.id) {
+              <option [value]="year.id">{{ year.name }}</option>
+            }
+          </select>
+        </div>
+      }
+      <div class="ft-field">
+        <label for="cfFrom">From</label>
+        <input id="cfFrom" type="date" [value]="fromDate()" (input)="fromDate.set($any($event.target).value)" />
+      </div>
+      <div class="ft-field">
+        <label for="cfTo">To</label>
+        <input id="cfTo" type="date" [value]="toDate()" (input)="toDate.set($any($event.target).value)" />
+      </div>
+      <button type="button" class="ft-btn ft-btn--primary report-run-btn" (click)="runReport()">
+        Run report
+      </button>
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <div class="report-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="report-loading">Generating report…</div>
+  } @else if (report(); as data) {
+    <p class="report-period">
+      {{ formatReportDate(data.fromDate) }} – {{ formatReportDate(data.toDate) }}
+    </p>
+
+    <div class="report-kpi-row">
+      <div class="report-kpi report-kpi--income">
+        <span>Total inflow</span>
+        <strong>{{ data.totalInflow | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi report-kpi--expense">
+        <span>Total outflow</span>
+        <strong>{{ data.totalOutflow | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi" [class.report-kpi--positive]="data.netCashflow >= 0" [class.report-kpi--negative]="data.netCashflow < 0">
+        <span>Net cashflow</span>
+        <strong>{{ data.netCashflow | currency: currency() }}</strong>
+      </div>
+    </div>
+
+    <div class="report-split">
+      <section class="report-card">
+        <h2>Income sources</h2>
+        @if (data.inflows.length === 0) {
+          <p class="report-empty">No income in this period.</p>
+        } @else {
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th class="report-num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of data.inflows; track item.coaId) {
+                <tr>
+                  <td>{{ item.accountName }} <span class="report-code">({{ item.accountCode }})</span></td>
+                  <td class="report-num report-positive">{{ item.amount | currency: currency() }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+
+      <section class="report-card">
+        <h2>Expense categories</h2>
+        @if (data.outflows.length === 0) {
+          <p class="report-empty">No expenses in this period.</p>
+        } @else {
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Account</th>
+                <th class="report-num">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of data.outflows; track item.coaId) {
+                <tr>
+                  <td>{{ item.accountName }} <span class="report-code">({{ item.accountCode }})</span></td>
+                  <td class="report-num report-negative">{{ item.amount | currency: currency() }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </section>
+    </div>
+  }
+</div>

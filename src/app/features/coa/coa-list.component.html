@@ -1,0 +1,181 @@
+<div class="coa-page">
+  <header class="coa-header">
+    <div>
+      <h1>Chart of Accounts</h1>
+      <p>Default account heads are read-only. You can edit or delete accounts you created.</p>
+    </div>
+    <div class="coa-header-actions">
+      <button
+        type="button"
+        class="ft-btn ft-btn--secondary"
+        [disabled]="downloadingPdf() || loading()"
+        (click)="downloadPdf()"
+      >
+        {{ downloadingPdf() ? 'Preparing…' : 'Print / PDF' }}
+      </button>
+      <button type="button" class="ft-btn ft-btn--primary" (click)="toggleAddForm()">
+        {{ showAddForm() ? 'Close' : '+ Add account' }}
+      </button>
+    </div>
+  </header>
+
+  @if (successMessage()) {
+    <p class="ft-alert ft-alert--success">{{ successMessage() }}</p>
+  }
+  @if (errorMessage()) {
+    <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+  }
+
+  @if (showAddForm()) {
+    <section class="coa-card coa-form-card">
+      <h2>New account head</h2>
+      <form [formGroup]="form" (ngSubmit)="submitAdd()">
+        <div class="coa-form-row">
+          <div class="ft-field">
+            <label for="accountTypeId">Account type</label>
+            <select id="accountTypeId" formControlName="accountTypeId">
+              @for (type of accountTypes(); track type.id) {
+                <option [value]="type.id">{{ type.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="ft-field">
+            <label for="accountName">Account head name</label>
+            <input id="accountName" formControlName="accountName" placeholder="e.g. Medical" />
+          </div>
+        </div>
+        <p class="coa-form-hint">Account code is assigned automatically. Names must be unique within each account type.</p>
+        <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
+          {{ submitting() ? 'Saving…' : 'Save account' }}
+        </button>
+      </form>
+    </section>
+  }
+
+  @if (loadError()) {
+    <div class="coa-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="coa-loading">Loading accounts…</div>
+  } @else {
+    <section class="coa-card coa-search-card">
+      <div class="coa-search-row">
+        <div class="ft-field coa-search-field">
+          <label for="coaSearch">Search accounts</label>
+          <input
+            id="coaSearch"
+            type="search"
+            [value]="searchQuery()"
+            placeholder="Search by code or account head name…"
+            (input)="searchQuery.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+      @if (hasSearch() && totalMatchCount() > 0) {
+        <p class="coa-search-meta">
+          {{ totalMatchCount() }} result{{ totalMatchCount() === 1 ? '' : 's' }} for “{{ searchQuery().trim() }}”
+        </p>
+      }
+    </section>
+
+    @if (hasSearch() && filteredSections().length === 0) {
+      <section class="coa-card">
+        <div class="coa-table-wrap">
+          <table class="coa-table">
+            <thead>
+              <tr>
+                <th class="coa-table-code">Code</th>
+                <th>Account head name</th>
+                <th class="coa-table-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="coa-table-empty">
+                <td colspan="3">
+                  <div class="coa-table-empty-message">No accounts match your search.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    } @else {
+      @for (section of filteredSections(); track section.accountTypeId) {
+      <section class="coa-card">
+        <header class="coa-group-head">
+          <span [class]="accountTypeBadgeClass(section.accountTypeCode)">{{ section.accountTypeName }}</span>
+          <span class="coa-group-count">{{ section.items.length }} account{{ section.items.length === 1 ? '' : 's' }}</span>
+        </header>
+
+        <div class="coa-table-wrap">
+          <table class="coa-table">
+            <thead>
+              <tr>
+                <th class="coa-table-code">Code</th>
+                <th>Account head name</th>
+                <th class="coa-table-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of section.items; track item.id) {
+                <tr [class.coa-table-row--group]="isGroupRow(item)">
+                  @if (editingId() === item.id) {
+                    <td colspan="3">
+                      <form class="coa-edit-form" [formGroup]="editForm" (ngSubmit)="submitEdit(item)">
+                        <span class="coa-code">{{ item.code }}</span>
+                        <input formControlName="accountName" placeholder="Account head name" />
+                        <label class="coa-active-toggle">
+                          <input type="checkbox" formControlName="isActive" />
+                          Active
+                        </label>
+                        <button type="submit" class="ft-btn ft-btn--primary ft-btn--sm" [disabled]="submitting()">
+                          Save
+                        </button>
+                        <button type="button" class="ft-btn ft-btn--secondary ft-btn--sm" (click)="cancelEdit()">
+                          Cancel
+                        </button>
+                      </form>
+                    </td>
+                  } @else {
+                    <td class="coa-table-code">{{ item.code }}</td>
+                    <td>
+                      <span class="coa-table-name">{{ item.accountHeadName }}</span>
+                      @if (item.isSystemDefault) {
+                        <span class="coa-tag">Default</span>
+                      }
+                      @if (!item.isActive) {
+                        <span class="coa-tag coa-tag--inactive">Inactive</span>
+                      }
+                      @if (!item.isSystemDefault && !item.canDelete && item.canEdit) {
+                        <span class="coa-tag coa-tag--used">In use</span>
+                      }
+                    </td>
+                    <td class="coa-table-actions">
+                      @if (item.canEdit || item.canDelete) {
+                        <div class="coa-item-actions">
+                          @if (item.canEdit) {
+                            <button type="button" class="coa-action" (click)="startEdit(item)">Edit</button>
+                          }
+                          @if (item.canDelete) {
+                            <button type="button" class="coa-action coa-action--danger" (click)="deleteAccount(item)">
+                              Delete
+                            </button>
+                          }
+                        </div>
+                      } @else {
+                        <span class="coa-table-muted">—</span>
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      }
+    }
+  }
+</div>

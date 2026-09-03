@@ -1,0 +1,85 @@
+<div class="report-page report-page--wide">
+  <header class="report-header">
+    <a routerLink="/app/reports" class="report-back">← All reports</a>
+    <h1>Monthly cashflow</h1>
+    <p>Income, expense, and net for each month in the financial year.</p>
+  </header>
+
+  <section class="report-card report-filters">
+    <div class="report-filter-row">
+      @if (years().length > 0) {
+        <div class="ft-field">
+          <label for="mcfYear">Financial year</label>
+          <select id="mcfYear" [value]="effectiveYearId() || ''" (change)="onYearChange($event)">
+            @for (year of years(); track year.id) {
+              <option [value]="year.id">{{ year.name }}</option>
+            }
+          </select>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <div class="report-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="report-loading">Generating report…</div>
+  } @else if (report(); as data) {
+    <div class="report-kpi-row">
+      <div class="report-kpi report-kpi--income">
+        <span>Year income</span>
+        <strong>{{ data.totalIncome | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi report-kpi--expense">
+        <span>Year expense</span>
+        <strong>{{ data.totalExpense | currency: currency() }}</strong>
+      </div>
+      <div class="report-kpi" [class.report-kpi--positive]="data.totalNet >= 0" [class.report-kpi--negative]="data.totalNet < 0">
+        <span>Year net</span>
+        <strong>{{ data.totalNet | currency: currency() }}</strong>
+      </div>
+    </div>
+
+    <section class="report-card">
+      @if (data.months.length === 0) {
+        <p class="report-empty">No income or expense transactions this year.</p>
+      } @else {
+        <table class="report-table report-table--monthly">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Income</th>
+              <th>Expense</th>
+              <th class="report-num">Net</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (month of data.months; track month.label) {
+              <tr>
+                <td>{{ month.label }}</td>
+                <td>
+                  <div class="report-bar-cell">
+                    <span class="report-bar report-bar--income" [style.width.%]="barWidth(month.income, maxMonthValue())"></span>
+                    <span>{{ month.income | currency: currency() }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="report-bar-cell">
+                    <span class="report-bar report-bar--expense" [style.width.%]="barWidth(month.expense, maxMonthValue())"></span>
+                    <span>{{ month.expense | currency: currency() }}</span>
+                  </div>
+                </td>
+                <td class="report-num" [class.report-positive]="month.net >= 0" [class.report-negative]="month.net < 0">
+                  {{ month.net | currency: currency() }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  }
+</div>

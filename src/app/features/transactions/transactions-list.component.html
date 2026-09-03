@@ -1,0 +1,92 @@
+<div class="tx-page">
+  <header class="tx-header">
+    <div>
+      <h1>Transactions</h1>
+      <p>View all your income, expenses, transfers, and loan activity.</p>
+    </div>
+  </header>
+
+  <div class="tx-quick-actions">
+    <a routerLink="/app/transactions/income" class="tx-quick tx-quick--income">+ Income</a>
+    <a routerLink="/app/transactions/expense" class="tx-quick tx-quick--expense">+ Expense</a>
+    <a routerLink="/app/transactions/transfer" class="tx-quick tx-quick--transfer">+ Transfer</a>
+    <a routerLink="/app/loans/borrow" class="tx-quick tx-quick--loan">+ Borrow loan</a>
+    <a routerLink="/app/loans/repay" class="tx-quick tx-quick--loan">+ Repay loan</a>
+  </div>
+
+  <div class="tx-filters">
+    @if (years().length > 0) {
+      <div class="ft-field tx-filter-field">
+        <label for="txYear">Financial year</label>
+        <select id="txYear" [value]="effectiveYearId() || ''" (change)="onYearChange($event)">
+          @for (year of years(); track year.id) {
+            <option [value]="year.id">{{ year.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    <div class="ft-field tx-filter-field">
+      <label for="txType">Type</label>
+      <select id="txType" [value]="selectedTypeId() ?? ''" (change)="onTypeChange($event)">
+        <option value="">All types</option>
+        @for (type of types(); track type.id) {
+          @if (type.code !== 'OPENING_BALANCE') {
+            <option [value]="type.id">{{ type.name }}</option>
+          }
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (loadError()) {
+    <div class="tx-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="tx-loading">Loading transactions…</div>
+  } @else if (transactions().length === 0) {
+    <div class="tx-empty">
+      <p>No transactions found for this period.</p>
+      <a routerLink="/app/transactions/expense" class="ft-btn ft-btn--primary">Add expense</a>
+    </div>
+  } @else {
+    <section class="tx-card">
+      <ul class="tx-list">
+        @for (tx of transactions(); track tx.id) {
+          <li class="tx-item">
+            <span class="tx-item-icon">{{ txIcon(tx.transactionType?.code) }}</span>
+            <div class="tx-item-body">
+              <strong>{{ tx.description || tx.transactionType?.name || 'Transaction' }}</strong>
+              <span>{{ tx.transactionType?.name }} · {{ txRelativeDate(tx.transactionDate) }}</span>
+            </div>
+            <span
+              class="tx-item-amt"
+              [class.tx-item-amt--income]="tx.transactionType?.code === 'INCOME' || tx.transactionType?.code === 'LOAN_BORROW'"
+              [class.tx-item-amt--expense]="tx.transactionType?.code === 'EXPENSE' || tx.transactionType?.code === 'LOAN_REPAY'"
+            >
+              {{ txAmountPrefix(tx.transactionType?.code) }}{{ tx.amount | currency: currency() }}
+            </span>
+          </li>
+        }
+      </ul>
+
+      @if (totalPages() > 1) {
+        <footer class="tx-pagination">
+          <button type="button" class="ft-btn ft-btn--secondary" [disabled]="page() <= 1" (click)="prevPage()">
+            Previous
+          </button>
+          <span>Page {{ page() }} of {{ totalPages() }} ({{ totalCount() }} total)</span>
+          <button
+            type="button"
+            class="ft-btn ft-btn--secondary"
+            [disabled]="page() >= totalPages()"
+            (click)="nextPage()"
+          >
+            Next
+          </button>
+        </footer>
+      }
+    </section>
+  }
+</div>

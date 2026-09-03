@@ -1,66 +1,330 @@
-<section class="hero">
-  <h1>Take control of your money</h1>
-  <p>
-    Track income, expenses, and transfers. Your data stays private — each account gets its own ledger.
-  </p>
-  <div class="hero-actions">
-    <a routerLink="/auth/register" class="ft-btn ft-btn--primary">Register</a>
-    <a routerLink="/auth/login" class="ft-btn ft-btn--secondary">Login</a>
+<section class="lp-hero">
+  <div class="lp-hero-copy">
+    <h1>Take Control of Your <span>Finances</span></h1>
+    <p>
+      Track income, expenses, and transfers in one place. Your data stays private — each account
+      gets its own ledger.
+    </p>
+    <div class="lp-hero-actions">
+      <a routerLink="/auth/register" class="lp-btn lp-btn--primary lp-btn--lg">
+        Get Started Free
+        <span aria-hidden="true">→</span>
+      </a>
+      <a routerLink="/auth/login" class="lp-btn lp-btn--outline lp-btn--lg">Login to Account</a>
+    </div>
+    <div class="lp-social-proof">
+      <div class="lp-avatars" aria-hidden="true">
+        <span>H</span>
+        <span>R</span>
+        <span>S</span>
+      </div>
+      <div>
+        <strong>Join people taking control of their money</strong>
+        <span class="lp-rating">★★★★★ 4.8/5</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lp-hero-visual" aria-hidden="true">
+    <div class="lp-dash-frame">
+      <aside class="lp-dash-side">
+        <div class="lp-dash-brand">
+          <span class="lp-dash-brand-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-6h3v6h-3z"/></svg>
+          </span>
+          <div>
+            <strong>FinTrack</strong>
+            <small>Your Money, Your Control</small>
+          </div>
+        </div>
+        <div class="lp-dash-nav">
+          <span class="lp-dash-sec">Overview</span>
+          <span class="lp-dash-link is-active">Dashboard</span>
+          <span class="lp-dash-link">Chart of Accounts</span>
+          <span class="lp-dash-sec">Money</span>
+          <span class="lp-dash-link">Transactions ▾</span>
+          <span class="lp-dash-link">Loan ▾</span>
+          <span class="lp-dash-sec">Analytics</span>
+          <span class="lp-dash-link">Reports ▾</span>
+        </div>
+        <div class="lp-dash-logout">Logout</div>
+      </aside>
+
+      <div class="lp-dash-main">
+        <header class="lp-dash-head">
+          <div>
+            <h2>Good morning, Hridoy! 👋</h2>
+            <p>Here's what's happening with your finances today.</p>
+          </div>
+          <div class="lp-dash-profile">
+            <span class="lp-dash-avatar">H</span>
+            <span>Hridoy Roy</span>
+          </div>
+        </header>
+
+        <div class="lp-dash-actions">
+          <span class="lp-qa lp-qa--income">+ Income</span>
+          <span class="lp-qa lp-qa--expense">+ Expense</span>
+          <span class="lp-qa lp-qa--transfer">+ Transfer</span>
+          <span class="lp-qa lp-qa--loan">+ Borrow</span>
+        </div>
+
+        <div class="lp-dash-kpis">
+          <article>
+            <span class="lp-kpi-ico">💰</span>
+            <div>
+              <small>Total Balance</small>
+              <strong>BDT 29,907.00</strong>
+              <em>Assets − liabilities</em>
+            </div>
+          </article>
+          <article>
+            <span class="lp-kpi-ico">📈</span>
+            <div>
+              <small>Total Income</small>
+              <strong class="is-green">BDT 20,000.00</strong>
+              <em>This month</em>
+            </div>
+          </article>
+          <article>
+            <span class="lp-kpi-ico">📉</span>
+            <div>
+              <small>Total Expense</small>
+              <strong class="is-red">BDT 10,100.00</strong>
+              <em>This month</em>
+            </div>
+          </article>
+          <article>
+            <span class="lp-kpi-ico">🏦</span>
+            <div>
+              <small>Net Savings</small>
+              <strong class="is-green">BDT 9,900.00</strong>
+              <em>This month</em>
+            </div>
+          </article>
+        </div>
+
+        <div class="lp-dash-mid">
+          <section class="lp-dash-card">
+            <div class="lp-card-head">
+              <h3>Spending Overview</h3>
+              <span>This month</span>
+            </div>
+            <div class="lp-donut-row">
+              <div class="lp-donut">
+                <div class="lp-donut-hole">
+                  <small>Total Expense</small>
+                  <strong>BDT 10,100</strong>
+                </div>
+              </div>
+              <ul>
+                <li><i style="background:#22c55e"></i>Food <b>99%</b></li>
+                <li><i style="background:#3b82f6"></i>Rent <b>0%</b></li>
+                <li><i style="background:#f97316"></i>Utilities <b>0%</b></li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="lp-dash-card">
+            <div class="lp-card-head">
+              <h3>Recent Transactions</h3>
+              <span>View all</span>
+            </div>
+            <ul class="lp-tx">
+              <li>
+                <span class="lp-tx-ico">⇄</span>
+                <div><strong>Pen</strong><small>Transfer · Today</small></div>
+                <b>BDT 500.00</b>
+              </li>
+              <li>
+                <span class="lp-tx-ico">💳</span>
+                <div><strong>House rent</strong><small>Loan Repay · Today</small></div>
+                <b class="is-red">−BDT 5,000.00</b>
+              </li>
+              <li>
+                <span class="lp-tx-ico">🛒</span>
+                <div><strong>Pen</strong><small>Expense · Today</small></div>
+                <b class="is-red">−BDT 50.00</b>
+              </li>
+              <li>
+                <span class="lp-tx-ico">🛒</span>
+                <div><strong>House rent</strong><small>Expense · Today</small></div>
+                <b class="is-red">−BDT 10,000.00</b>
+              </li>
+              <li>
+                <span class="lp-tx-ico">💰</span>
+                <div><strong>Salary</strong><small>Income · Today</small></div>
+                <b class="is-green">+BDT 20,000.00</b>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="lp-dash-bottom">
+          <section class="lp-dash-card">
+            <div class="lp-card-head"><h3>Accounts Overview</h3></div>
+            <ul class="lp-accts">
+              <li><span>💵</span><div><strong>Cash</strong><small>10100 · ASSET</small></div><b>BDT 14,450</b></li>
+              <li><span>🏦</span><div><strong>Bank</strong><small>10200 · ASSET</small></div><b>BDT 20,457</b></li>
+              <li><span>📱</span><div><strong>Mobile Wallet</strong><small>10300 · ASSET</small></div><b>BDT 0</b></li>
+              <li><span>💳</span><div><strong>Credit Card</strong><small>20100 · LIABILITY</small></div><b>BDT 5,000</b></li>
+            </ul>
+          </section>
+          <section class="lp-dash-card">
+            <div class="lp-card-head">
+              <h3>Monthly Trend</h3>
+              <span>FY 2026</span>
+            </div>
+            <div class="lp-trend">
+              <div><i></i><span>Jan</span></div>
+              <div><i></i><span>Feb</span></div>
+              <div><i></i><span>Mar</span></div>
+              <div><i></i><span>Apr</span></div>
+              <div><i></i><span>May</span></div>
+              <div><i></i><span>Jun</span></div>
+            </div>
+            <p class="lp-muted">Trend chart unlocks as you add more monthly data.</p>
+          </section>
+          <section class="lp-dash-card">
+            <div class="lp-card-head"><h3>Budget Status</h3></div>
+            <ul class="lp-budget">
+              <li>
+                <div><span>Food</span><b>BDT 10,100</b></div>
+                <div class="lp-bar"><i style="width:95%"></i></div>
+              </li>
+              <li>
+                <div><span>Rent</span><b>BDT 0</b></div>
+                <div class="lp-bar"><i style="width:4%"></i></div>
+              </li>
+              <li>
+                <div><span>Utilities</span><b>BDT 0</b></div>
+                <div class="lp-bar"><i style="width:4%"></i></div>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="lp-tip">
+          <span>💡</span>
+          <p>Smart Tip: You saved 50% of your income this month. Great job — keep it up and save more!</p>
+          <span>🏆</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="ft-grid ft-grid--3">
-  <article class="ft-card stat">
-    <span class="stat-label">Default accounts</span>
-    <strong>18</strong>
-    <span class="stat-hint">Created on register</span>
-  </article>
-  <article class="ft-card stat">
-    <span class="stat-label">Secure auth</span>
+<section class="lp-section" id="features">
+  <p class="lp-eyebrow">Everything you need</p>
+  <h2>Powerful features for better financial control</h2>
+  <p class="lp-lead">Simple, secure, and designed for your everyday money management.</p>
+
+  <div class="lp-features">
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--green">💳</span>
+      <h3>Track Income &amp; Expenses</h3>
+      <p>Record income, expenses, transfers, and loans with a clean workflow and automatic balancing.</p>
+    </article>
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--blue">📊</span>
+      <h3>Insightful Reports</h3>
+      <p>Cashflow, balance, account statement, and monthly reports help you understand every move.</p>
+    </article>
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--orange">🎯</span>
+      <h3>Chart of Accounts</h3>
+      <p>Start with ready-made account heads, then add your own categories as your money life grows.</p>
+    </article>
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--teal">🔒</span>
+      <h3>Secure &amp; Private</h3>
+      <p>JWT authentication and per-user ledgers keep your financial data isolated and protected.</p>
+    </article>
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--purple">🔄</span>
+      <h3>Access Anywhere</h3>
+      <p>Use FinTrack from your browser on desktop or mobile — your dashboard stays with you.</p>
+    </article>
+    <article>
+      <span class="lp-feat-ico lp-feat-ico--lime">৳</span>
+      <h3>Your Currency</h3>
+      <p>Works with BDT by default and supports multiple currencies from your profile.</p>
+    </article>
+  </div>
+</section>
+
+<section class="lp-section lp-how" id="how-it-works">
+  <p class="lp-eyebrow">How it works</p>
+  <h2>From signup to clarity in three steps</h2>
+  <div class="lp-steps">
+    <article>
+      <span>1</span>
+      <h3>Create your account</h3>
+      <p>Register once and get a private ledger with default accounts ready to use.</p>
+    </article>
+    <article>
+      <span>2</span>
+      <h3>Add your money moves</h3>
+      <p>Log income, expenses, transfers, and loans as they happen — in seconds.</p>
+    </article>
+    <article>
+      <span>3</span>
+      <h3>See the full picture</h3>
+      <p>Watch balances, spending, and reports update automatically on your dashboard.</p>
+    </article>
+  </div>
+</section>
+
+<section class="lp-stats" id="privacy">
+  <div>
+    <strong>18+</strong>
+    <span>Default Accounts</span>
+    <small>Created on register</small>
+  </div>
+  <div>
     <strong>JWT</strong>
-    <span class="stat-hint">Access + refresh tokens</span>
-  </article>
-  <article class="ft-card stat">
-    <span class="stat-label">Your currency</span>
+    <span>Secure Authentication</span>
+    <small>Access + refresh tokens</small>
+  </div>
+  <div>
     <strong>BDT</strong>
-    <span class="stat-hint">Change anytime in profile</span>
-  </article>
+    <span>Your Currency</span>
+    <small>Change anytime in profile</small>
+  </div>
+  <div>
+    <strong>100%</strong>
+    <span>Private by Design</span>
+    <small>Your data is always yours</small>
+  </div>
 </section>
 
-<section class="ft-grid ft-grid--3">
-  <article class="ft-card feature">
-    <h2>Income & expenses</h2>
-    <p>Record everyday money moves with a simple UI. Balancing happens on the backend.</p>
-  </article>
-  <article class="ft-card feature">
-    <h2>Chart of accounts</h2>
-    <p>Cash, Bank, Salary, Food, and more — ready as soon as you create an account.</p>
-  </article>
-  <article class="ft-card feature">
-    <h2>Private by design</h2>
-    <p>Every user has isolated data. You only see your own accounts and transactions.</p>
-  </article>
-</section>
-
-<section class="ft-card preview">
-  <h2>After you log in</h2>
-  <p class="preview-note">Your dashboard shows balances and accounts at a glance.</p>
-  <div class="ft-grid ft-grid--4">
-    <div class="preview-item">
-      <span>Total Balance</span>
-      <strong>—</strong>
+<section class="lp-cta" id="get-started">
+  <div class="lp-cta-art" aria-hidden="true">
+    <div class="lp-wallet">
+      <div class="lp-wallet-body"></div>
+      <div class="lp-card lp-card-1"></div>
+      <div class="lp-card lp-card-2"></div>
+      <div class="lp-coin lp-coin-1"></div>
+      <div class="lp-coin lp-coin-2"></div>
+      <div class="lp-coin lp-coin-3"></div>
     </div>
-    <div class="preview-item">
-      <span>Income</span>
-      <strong>—</strong>
-    </div>
-    <div class="preview-item">
-      <span>Expense</span>
-      <strong>—</strong>
-    </div>
-    <div class="preview-item">
-      <span>Net</span>
-      <strong>—</strong>
+  </div>
+  <div class="lp-cta-copy">
+    <h2>Ready to take control of your money?</h2>
+    <p>Join FinTrack today and manage income, expenses, and loans from one private dashboard.</p>
+    <div class="lp-hero-actions">
+      <a routerLink="/auth/register" class="lp-btn lp-btn--primary lp-btn--lg">
+        Create Your Account
+        <span aria-hidden="true">→</span>
+      </a>
+      <a routerLink="/auth/login" class="lp-btn lp-btn--outline lp-btn--lg">Login to Account</a>
     </div>
   </div>
 </section>
+
+<footer class="lp-footer" id="about">
+  <p>
+    <span aria-hidden="true">🔒</span>
+    Your data is secure and private. We never share your information.
+  </p>
+</footer>

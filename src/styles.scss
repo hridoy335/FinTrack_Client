@@ -130,6 +130,12 @@ a {
     color: var(--ft-expense);
     border: 1px solid #ffcdd2;
   }
+
+  &--success {
+    background: #ecfdf5;
+    color: var(--ft-income);
+    border: 1px solid #bbf7d0;
+  }
 }
 
 .ft-muted {

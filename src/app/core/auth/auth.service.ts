@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 import { ApiService } from '../http/api.service';
-import { AuthTokenData, AuthUser } from '../models';
+import { ApiEndpoints } from '../api/api-endpoints';
+import { AuthTokenData, AuthUser, RegisterRequest } from '../../features/auth/auth.model';
 
 const ACCESS_KEY = 'ft_access';
 const REFRESH_KEY = 'ft_refresh';
@@ -18,20 +19,13 @@ export class AuthService {
   readonly user = signal<AuthUser | null>(readUser());
   readonly isLoggedIn = computed(() => !!this.accessToken() && !!this.user());
 
-  register(body: {
-    userName: string;
-    email: string;
-    password: string;
-    firstName: string;
-    lastName?: string | null;
-    currencyCode: string;
-  }): Observable<{ id: number }> {
-    return this.api.post<{ id: number }>('/api/UserInfos', body);
+  register(body: RegisterRequest): Observable<{ id: number }> {
+    return this.api.post<{ id: number }>(ApiEndpoints.userInfos.root, body);
   }
 
   login(userNameOrEmail: string, password: string): Observable<AuthTokenData> {
     return this.api
-      .post<AuthTokenData>('/api/Auths/login', { userNameOrEmail, password })
+      .post<AuthTokenData>(ApiEndpoints.auth.login, { userNameOrEmail, password })
       .pipe(tap((data) => this.persist(data)));
   }
 
@@ -42,7 +36,7 @@ export class AuthService {
     }
 
     return this.api
-      .post<AuthTokenData>('/api/Auths/refresh', { refreshToken })
+      .post<AuthTokenData>(ApiEndpoints.auth.refresh, { refreshToken })
       .pipe(tap((data) => this.persist(data)));
   }
 
@@ -51,12 +45,17 @@ export class AuthService {
     this.clear();
 
     if (refreshToken) {
-      this.api.post<unknown>('/api/Auths/logout', { refreshToken }).subscribe({
+      this.api.post<unknown>(ApiEndpoints.auth.logout, { refreshToken }).subscribe({
         error: () => undefined
       });
     }
 
     void this.router.navigateByUrl('/');
+  }
+
+  updateSessionUser(user: AuthUser): void {
+    sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.user.set(user);
   }
 
   private persist(data: AuthTokenData): void {

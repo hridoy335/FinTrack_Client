@@ -1,0 +1,25 @@
+@if (!expanded()) {
+  <button type="button" class="tx-coa-add-btn" (click)="open()">
+    + New {{ label() }}
+  </button>
+} @else {
+  <div class="tx-coa-add-panel" [formGroup]="form">
+    <input
+      type="text"
+      formControlName="accountName"
+      [placeholder]="'New ' + label() + ' name'"
+      (keydown.enter)="$event.preventDefault(); save()"
+    />
+    <div class="tx-coa-add-actions">
+      <button type="button" class="ft-btn ft-btn--primary ft-btn--sm" [disabled]="submitting()" (click)="save()">
+        {{ submitting() ? 'Adding…' : 'Add' }}
+      </button>
+      <button type="button" class="ft-btn ft-btn--secondary ft-btn--sm" [disabled]="submitting()" (click)="cancel()">
+        Cancel
+      </button>
+    </div>
+    @if (errorMessage()) {
+      <p class="tx-coa-add-error">{{ errorMessage() }}</p>
+    }
+  </div>
+}

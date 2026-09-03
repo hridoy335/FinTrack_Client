@@ -1,0 +1,113 @@
+<div class="report-page report-page--wide">
+  <header class="report-header">
+    <a routerLink="/app/reports" class="report-back">← All reports</a>
+    <h1>Account statement</h1>
+    <p>Opening balance, movements, and closing balance for one account.</p>
+  </header>
+
+  <section class="report-card report-filters">
+    <div class="report-filter-row">
+      <div class="ft-field">
+        <label for="stmtAccount">Account</label>
+        <select id="stmtAccount" [value]="selectedCoaId() || ''" (change)="onCoaChange($event)">
+          @for (coa of coaOptions(); track coa.id) {
+            <option [value]="coa.id">{{ coa.accountName }} ({{ coa.accountCode }})</option>
+          }
+        </select>
+      </div>
+      @if (years().length > 0) {
+        <div class="ft-field">
+          <label for="stmtYear">Financial year</label>
+          <select id="stmtYear" [value]="effectiveYearId() || ''" (change)="onYearChange($event)">
+            @for (year of years(); track year.id) {
+              <option [value]="year.id">{{ year.name }}</option>
+            }
+          </select>
+        </div>
+      }
+      <div class="ft-field">
+        <label for="stmtFrom">From</label>
+        <input id="stmtFrom" type="date" [value]="fromDate()" (input)="fromDate.set($any($event.target).value)" />
+      </div>
+      <div class="ft-field">
+        <label for="stmtTo">To</label>
+        <input id="stmtTo" type="date" [value]="toDate()" (input)="toDate.set($any($event.target).value)" />
+      </div>
+      <button type="button" class="ft-btn ft-btn--primary report-run-btn" (click)="runReport()">
+        Run report
+      </button>
+    </div>
+  </section>
+
+  @if (loadError()) {
+    <div class="report-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="report-loading">Generating report…</div>
+  } @else if (report(); as data) {
+    <section class="report-card">
+      <div class="report-statement-head">
+        <div>
+          <h2>{{ data.accountName }}</h2>
+          <p class="report-code-line">{{ data.accountCode }} · {{ data.accountTypeCode }}</p>
+          <p class="report-period">
+            {{ formatReportDate(data.fromDate) }} – {{ formatReportDate(data.toDate) }}
+          </p>
+        </div>
+        <div class="report-statement-balances">
+          <div>
+            <span>Opening</span>
+            <strong>{{ data.openingBalance | currency: currency() }}</strong>
+          </div>
+          <div>
+            <span>Closing</span>
+            <strong>{{ data.closingBalance | currency: currency() }}</strong>
+          </div>
+        </div>
+      </div>
+
+      @if (data.lines.length === 0) {
+        <p class="report-empty">No movements in this period.</p>
+      } @else {
+        <div class="report-table-wrap">
+          <table class="report-table report-table--statement">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Counterparty</th>
+                <th class="report-num">Debit</th>
+                <th class="report-num">Credit</th>
+                <th class="report-num">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (line of data.lines; track line.transactionId) {
+                <tr>
+                  <td>{{ line.transactionDate | date: 'mediumDate' }}</td>
+                  <td>
+                    {{ line.description || line.transactionTypeName }}
+                  </td>
+                  <td>{{ line.counterpartyAccountName }}</td>
+                  <td class="report-num">
+                    @if (line.debit > 0) {
+                      {{ line.debit | currency: currency() }}
+                    }
+                  </td>
+                  <td class="report-num">
+                    @if (line.credit > 0) {
+                      {{ line.credit | currency: currency() }}
+                    }
+                  </td>
+                  <td class="report-num">{{ line.balance | currency: currency() }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

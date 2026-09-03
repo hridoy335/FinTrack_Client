@@ -17,11 +17,13 @@ export class LoginComponent {
   private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
+  protected readonly showPassword = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     userNameOrEmail: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    rememberMe: [false]
   });
 
   submit(): void {
