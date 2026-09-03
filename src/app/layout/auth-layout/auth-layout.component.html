@@ -1,18 +1,12 @@
 <div class="auth-shell">
   <div class="auth-hills" aria-hidden="true">
     <svg class="auth-hills-svg" viewBox="0 0 1440 220" preserveAspectRatio="none">
-      <path
-        class="auth-hill auth-hill--back"
-        d="M0,140 C180,90 320,170 480,130 C640,90 760,40 920,70 C1080,100 1220,150 1440,110 L1440,220 L0,220 Z"
-      />
-      <path
-        class="auth-hill auth-hill--mid"
-        d="M0,170 C220,130 360,190 540,155 C720,120 860,80 1040,120 C1220,160 1320,175 1440,150 L1440,220 L0,220 Z"
-      />
-      <path
-        class="auth-hill auth-hill--front"
-        d="M0,190 C160,175 300,205 480,185 C700,160 860,145 1060,170 C1240,190 1340,200 1440,185 L1440,220 L0,220 Z"
-      />
+      <path class="auth-hill auth-hill--back"
+        d="M0,140 C180,90 320,170 480,130 C640,90 760,40 920,70 C1080,100 1220,150 1440,110 L1440,220 L0,220 Z" />
+      <path class="auth-hill auth-hill--mid"
+        d="M0,170 C220,130 360,190 540,155 C720,120 860,80 1040,120 C1220,160 1320,175 1440,150 L1440,220 L0,220 Z" />
+      <path class="auth-hill auth-hill--front"
+        d="M0,190 C160,175 300,205 480,185 C700,160 860,145 1060,170 C1240,190 1340,200 1440,185 L1440,220 L0,220 Z" />
       <g class="auth-trees">
         <path d="M210,168 L218,140 L226,168 Z" />
         <path d="M250,172 L256,150 L262,172 Z" />
@@ -30,89 +24,91 @@
     <aside class="auth-promo">
       <a routerLink="/" class="auth-logo">
         <span class="auth-logo-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-6h3v6h-3z"/></svg>
+          <svg viewBox="0 0 24 24">
+            <path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-6h3v6h-3z" />
+          </svg>
         </span>
         <strong>FinTrack</strong>
       </a>
 
       @if (isRegister()) {
-        <div class="auth-promo-copy">
-          <span class="auth-badge">+ Smart Personal Finance</span>
-          <h1>Start your journey towards <span>financial freedom</span></h1>
-          <p>
-            Create your FinTrack account in just a few steps and take control of your money.
-          </p>
-        </div>
+      <div class="auth-promo-copy">
+        <span class="auth-badge">+ Smart Personal Finance</span>
+        <h1>Start your journey towards <span>financial freedom</span></h1>
+        <p>
+          Create your FinTrack account in just a few steps and take control of your money.
+        </p>
+      </div>
 
-        <ul class="auth-features">
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">📊</span>
-            <div>
-              <strong>Track Expenses</strong>
-              <small>See where your money goes in real time.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">🎯</span>
-            <div>
-              <strong>Set Budgets</strong>
-              <small>Plan ahead and stick to your budget.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">📈</span>
-            <div>
-              <strong>Smart Insights</strong>
-              <small>Get reports and insights to grow your wealth.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">🔒</span>
-            <div>
-              <strong>Secure &amp; Private</strong>
-              <small>Your data is encrypted and always protected.</small>
-            </div>
-          </li>
-        </ul>
+      <ul class="auth-features">
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">📊</span>
+          <div>
+            <strong>Track Expenses</strong>
+            <small>See where your money goes in real time.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">🎯</span>
+          <div>
+            <strong>Set Budgets</strong>
+            <small>Plan ahead and stick to your budget.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">📈</span>
+          <div>
+            <strong>Smart Insights</strong>
+            <small>Get reports and insights to grow your wealth.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">🔒</span>
+          <div>
+            <strong>Secure &amp; Private</strong>
+            <small>Your data is encrypted and always protected.</small>
+          </div>
+        </li>
+      </ul>
       } @else {
-        <div class="auth-promo-copy">
-          <h1>Welcome back to <span>FinTrack</span></h1>
-          <p>
-            Track your income, manage expenses, set budgets and achieve your financial goals with
-            ease.
-          </p>
-        </div>
+      <div class="auth-promo-copy">
+        <h1>Welcome back to <span>FinTrack</span></h1>
+        <p>
+          Track your income, manage expenses, set budgets and achieve your financial goals with
+          ease.
+        </p>
+      </div>
 
-        <ul class="auth-features">
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">📈</span>
-            <div>
-              <strong>Track &amp; Analyze</strong>
-              <small>Monitor your income and expenses in real time.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">👛</span>
-            <div>
-              <strong>Set Budget</strong>
-              <small>Create budgets and stay on track with alerts.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">📊</span>
-            <div>
-              <strong>Smart Reports</strong>
-              <small>Get insights with beautiful reports and charts.</small>
-            </div>
-          </li>
-          <li>
-            <span class="auth-feat-ico" aria-hidden="true">🛡️</span>
-            <div>
-              <strong>Secure &amp; Private</strong>
-              <small>Your data is safe, secure and private.</small>
-            </div>
-          </li>
-        </ul>
+      <ul class="auth-features">
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">📈</span>
+          <div>
+            <strong>Track &amp; Analyze</strong>
+            <small>Monitor your income and expenses in real time.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">👛</span>
+          <div>
+            <strong>Set Budget</strong>
+            <small>Create budgets and stay on track with alerts.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">📊</span>
+          <div>
+            <strong>Smart Reports</strong>
+            <small>Get insights with beautiful reports and charts.</small>
+          </div>
+        </li>
+        <li>
+          <span class="auth-feat-ico" aria-hidden="true">🛡️</span>
+          <div>
+            <strong>Secure &amp; Private</strong>
+            <small>Your data is safe, secure and private.</small>
+          </div>
+        </li>
+      </ul>
       }
     </aside>
 
@@ -120,10 +116,10 @@
       <div class="auth-panel-inner" [class.auth-panel-inner--register]="isRegister()">
         <router-outlet />
         @if (!isRegister()) {
-          <p class="auth-secure">
-            <span aria-hidden="true">🛡️</span>
-            Your financial data is encrypted and 100% secure
-          </p>
+        <p class="auth-secure">
+          <span aria-hidden="true">🛡️</span>
+          Your financial data is encrypted and 100% secure
+        </p>
         }
       </div>
     </section>
@@ -132,16 +128,16 @@
   <footer class="auth-footer-bar">
     <span>© {{ year }} FinTrack. All rights reserved.</span>
     @if (isRegister()) {
-      <p class="auth-footer-safe">
-        <span aria-hidden="true">🛡️</span>
-        Your data is safe with us.
-      </p>
+    <p class="auth-footer-safe">
+      <span aria-hidden="true">🛡️</span>
+      Your data is safe with us.
+    </p>
     } @else {
-      <nav>
-        <a href="#privacy">Privacy Policy</a>
-        <a href="#terms">Terms of Service</a>
-        <a href="#contact">Contact Us</a>
-      </nav>
+    <nav>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#terms">Terms of Service</a>
+      <a href="#contact">Contact Us</a>
+    </nav>
     }
   </footer>
 </div>

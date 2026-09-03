@@ -4,7 +4,11 @@ export const ApiEndpoints = {
   auth: {
     login: '/api/Auths/login',
     refresh: '/api/Auths/refresh',
-    logout: '/api/Auths/logout'
+    logout: '/api/Auths/logout',
+    google: '/api/Auths/google',
+    forgotPassword: '/api/Auths/forgot-password',
+    verifyRecoveryCode: '/api/Auths/verify-recovery-code',
+    resetPassword: '/api/Auths/reset-password'
   },
 
   userInfos: {

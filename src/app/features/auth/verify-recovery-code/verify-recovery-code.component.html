@@ -1,0 +1,73 @@
+<div class="auth-card">
+  <div class="auth-card-badge" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 1a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V6a5 5 0 0 0-5-5zm-3 8V6a3 3 0 0 1 6 0v3H9z"/></svg>
+  </div>
+
+  <h1>Enter recovery code</h1>
+  <p class="auth-card-sub">We sent a 6-digit code to your email.</p>
+
+  <div class="auth-readonly">
+    <span>Email</span>
+    <strong>{{ email() }}</strong>
+  </div>
+
+  @if (successMessage()) {
+    <p class="ft-alert ft-alert--success">{{ successMessage() }}</p>
+  }
+  @if (errorMessage()) {
+    <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="verify()">
+    <div class="auth-field">
+      <label for="code">Recovery code</label>
+      <div class="auth-input">
+        <input
+          id="code"
+          type="text"
+          inputmode="numeric"
+          maxlength="6"
+          formControlName="code"
+          autocomplete="one-time-code"
+          placeholder="6-digit code"
+        />
+      </div>
+      @if (form.controls.code.touched && form.controls.code.invalid) {
+        <p class="auth-field-error">Enter the 6-digit code from your email.</p>
+      }
+    </div>
+
+    <p class="auth-timer" [class.auth-timer--expired]="codeExpired()">
+      @if (codeExpired()) {
+        Code expired. Tap Resend code to get a new one.
+      } @else {
+        Code expires in <strong>{{ timerLabel() }}</strong>
+      }
+    </p>
+
+    <button type="submit" class="auth-submit" [disabled]="submitting() || codeExpired()">
+      {{ submitting() ? 'Verifying…' : 'Verify code' }}
+    </button>
+  </form>
+
+  <button
+    type="button"
+    class="auth-submit auth-submit--secondary"
+    [disabled]="!canResend()"
+    (click)="resend()"
+  >
+    @if (resending()) {
+      Resending…
+    } @else if (resendSecondsLeft() > 0) {
+      Resend code in {{ resendSecondsLeft() }}s
+    } @else {
+      Resend code
+    }
+  </button>
+
+  <p class="auth-switch auth-switch--spaced">
+    <a routerLink="/auth/forgot-password">Use a different email</a>
+    ·
+    <a routerLink="/auth/login">Back to sign in</a>
+  </p>
+</div>

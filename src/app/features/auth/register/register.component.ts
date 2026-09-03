@@ -23,7 +23,6 @@ export class RegisterComponent {
   protected readonly form = this.fb.nonNullable.group({
     firstName: ['', Validators.required],
     lastName: [''],
-    userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     currencyCode: ['BDT', Validators.required],
@@ -31,6 +30,10 @@ export class RegisterComponent {
   });
 
   submit(): void {
+    if (this.submitting()) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -43,10 +46,9 @@ export class RegisterComponent {
 
     this.auth
       .register({
-        firstName: v.firstName,
-        lastName: v.lastName || null,
-        userName: v.userName,
-        email: v.email,
+        firstName: v.firstName.trim(),
+        lastName: v.lastName.trim() || null,
+        email: v.email.trim().toLowerCase(),
         password: v.password,
         currencyCode: v.currencyCode
       })

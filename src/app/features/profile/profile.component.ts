@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component,computed, effect,inject,signal} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { finalize, throwError } from 'rxjs';
+
 import { AuthService } from '../../core/auth/auth.service';
 import { ProfileService } from './profile.service';
 
@@ -12,29 +13,23 @@ import { ProfileService } from './profile.service';
   imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './profile.component.html'
 })
-
 export class ProfileComponent {
-
   private readonly profileService = inject(ProfileService);
   private readonly auth = inject(AuthService);
   private readonly fb = inject(FormBuilder);
-
 
   protected readonly submitting = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly successMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
-
     firstName: ['', Validators.required],
     lastName: [''],
-    userName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     currencyCode: ['BDT', Validators.required]
   });
 
   protected readonly profileResource = rxResource({
-
     params: () => ({ userId: this.auth.user()?.id ?? null }),
     stream: ({ params }) => {
       if (params.userId == null) {
@@ -42,10 +37,7 @@ export class ProfileComponent {
       }
       return this.profileService.getByUserId(params.userId);
     }
-
   });
-
-
 
   protected readonly profile = computed(() => this.profileResource.value());
   protected readonly loading = computed(() => this.profileResource.isLoading());
@@ -54,7 +46,6 @@ export class ProfileComponent {
     return err instanceof Error ? err.message : err ? String(err) : null;
   });
 
-
   constructor() {
     effect(() => {
       const p = this.profile();
@@ -62,21 +53,22 @@ export class ProfileComponent {
       this.form.patchValue({
         firstName: p.firstName,
         lastName: p.lastName ?? '',
-        userName: p.userName,
         email: p.email,
         currencyCode: p.currencyCode
       });
     });
-
   }
 
+  submit(): void {
+    if (this.submitting()) {
+      return;
+    }
 
-
- async submit(): Promise<any> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+
     const p = this.profile();
     if (!p) return;
 
@@ -88,10 +80,9 @@ export class ProfileComponent {
 
     this.profileService
       .update(p.id, {
-        firstName: v.firstName,
-        lastName: v.lastName || null,
-        userName: v.userName,
-        email: v.email,
+        firstName: v.firstName.trim(),
+        lastName: v.lastName.trim() || null,
+        email: v.email.trim().toLowerCase(),
         currencyCode: v.currencyCode,
         isActive: p.isActive
       })
@@ -102,14 +93,10 @@ export class ProfileComponent {
           this.profileResource.reload();
         },
         error: (err: Error) => this.errorMessage.set(err.message)
-
       });
   }
 
-  protected retry(): any {
+  protected retry(): void {
     this.profileResource.reload();
   }
-
 }
-
-

@@ -26,7 +26,6 @@ export class ProfileService {
   private syncSessionUser(profile: UserProfile): void {
     const user: AuthUser = {
       id: profile.id,
-      userName: profile.userName,
       email: profile.email,
       firstName: profile.firstName,
       lastName: profile.lastName,

@@ -4,7 +4,17 @@ import { Observable, tap } from 'rxjs';
 
 import { ApiService } from '../http/api.service';
 import { ApiEndpoints } from '../api/api-endpoints';
-import { AuthTokenData, AuthUser, RegisterRequest } from '../../features/auth/auth.model';
+import {
+  AuthTokenData,
+  AuthUser,
+  ForgotPasswordRequest,
+  GoogleLoginRequest,
+  LoginRequest,
+  PasswordRecoveryMessageResponse,
+  RegisterRequest,
+  ResetPasswordRequest,
+  VerifyRecoveryCodeRequest
+} from '../../features/auth/auth.model';
 
 const ACCESS_KEY = 'ft_access';
 const REFRESH_KEY = 'ft_refresh';
@@ -20,13 +30,60 @@ export class AuthService {
   readonly isLoggedIn = computed(() => !!this.accessToken() && !!this.user());
 
   register(body: RegisterRequest): Observable<{ id: number }> {
-    return this.api.post<{ id: number }>(ApiEndpoints.userInfos.root, body);
+    return this.api.post<{ id: number }>(ApiEndpoints.userInfos.root, {
+      ...body,
+      email: normalizeEmail(body.email)
+    });
   }
 
-  login(userNameOrEmail: string, password: string): Observable<AuthTokenData> {
+  login(email: string, password: string): Observable<AuthTokenData> {
+    const body: LoginRequest = {
+      email: normalizeEmail(email),
+      password
+    };
+
     return this.api
-      .post<AuthTokenData>(ApiEndpoints.auth.login, { userNameOrEmail, password })
+      .post<AuthTokenData>(ApiEndpoints.auth.login, body)
       .pipe(tap((data) => this.persist(data)));
+  }
+
+  loginWithGoogle(idToken: string): Observable<AuthTokenData> {
+    const body: GoogleLoginRequest = { idToken };
+    return this.api
+      .post<AuthTokenData>(ApiEndpoints.auth.google, body)
+      .pipe(tap((data) => this.persist(data)));
+  }
+
+  forgotPassword(email: string): Observable<PasswordRecoveryMessageResponse> {
+    const body: ForgotPasswordRequest = { email: normalizeEmail(email) };
+    return this.api.post<PasswordRecoveryMessageResponse>(ApiEndpoints.auth.forgotPassword, body);
+  }
+
+  verifyRecoveryCode(
+    email: string,
+    code: string
+  ): Observable<PasswordRecoveryMessageResponse> {
+    const body: VerifyRecoveryCodeRequest = {
+      email: normalizeEmail(email),
+      code: code.trim()
+    };
+    return this.api.post<PasswordRecoveryMessageResponse>(
+      ApiEndpoints.auth.verifyRecoveryCode,
+      body
+    );
+  }
+
+  resetPassword(
+    email: string,
+    code: string,
+    newPassword: string
+  ): Observable<PasswordRecoveryMessageResponse> {
+    const body: ResetPasswordRequest = {
+      email: normalizeEmail(email),
+      code: code.trim(),
+      newPassword
+    };
+    return this.api.post<PasswordRecoveryMessageResponse>(ApiEndpoints.auth.resetPassword, body);
   }
 
   refresh(): Observable<AuthTokenData> {
@@ -59,11 +116,12 @@ export class AuthService {
   }
 
   private persist(data: AuthTokenData): void {
+    const user = normalizeAuthUser(data.user);
     sessionStorage.setItem(ACCESS_KEY, data.accessToken);
     localStorage.setItem(REFRESH_KEY, data.refreshToken);
-    sessionStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    sessionStorage.setItem(USER_KEY, JSON.stringify(user));
     this.accessToken.set(data.accessToken);
-    this.user.set(data.user);
+    this.user.set(user);
   }
 
   private clear(): void {
@@ -75,6 +133,20 @@ export class AuthService {
   }
 }
 
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function normalizeAuthUser(user: AuthUser & { userName?: string }): AuthUser {
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName ?? null,
+    currencyCode: user.currencyCode
+  };
+}
+
 function readUser(): AuthUser | null {
   const raw = sessionStorage.getItem(USER_KEY);
   if (!raw) {
@@ -82,7 +154,7 @@ function readUser(): AuthUser | null {
   }
 
   try {
-    return JSON.parse(raw) as AuthUser;
+    return normalizeAuthUser(JSON.parse(raw) as AuthUser & { userName?: string });
   } catch {
     return null;
   }

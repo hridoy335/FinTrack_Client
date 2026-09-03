@@ -1,18 +1,9 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  HostListener,
-  inject,
-  signal
+  ChangeDetectionStrategy, Component, computed, HostListener, inject, signal
 } from '@angular/core';
-
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-
 import { filter } from 'rxjs';
-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-
 import { AuthService } from '../../core/auth/auth.service';
 
 @Component({

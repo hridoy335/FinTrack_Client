@@ -1,267 +1,184 @@
 <div class="app-shell">
 
   <aside class="app-sidebar">
-
     <div class="sidebar-brand">
-
       <span class="brand-icon" aria-hidden="true">
-
-        <svg viewBox="0 0 24 24"><path d="M4 19V5h2v14H4zm6 0V9h2v10h-2zm6 0V3h2v16h-2z"/></svg>
-
+        <svg viewBox="0 0 24 24">
+          <path d="M4 19V5h2v14H4zm6 0V9h2v10h-2zm6 0V3h2v16h-2z" />
+        </svg>
       </span>
-
       <div>
-
         <div class="brand-text">FinTrack</div>
-
         <div class="brand-tagline">Your Money, Your Control</div>
-
       </div>
-
     </div>
 
 
 
     <nav class="sidebar-nav">
-
       <div class="nav-section">
-
         <span class="nav-section-label">Overview</span>
-
         <a routerLink="/app/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6v7H4v-7zm10 0h6v7h-6v-7zM4 4h6v7H4V4zm10 0h6v7h-6V4z"/></svg>
-
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 13h6v7H4v-7zm10 0h6v7h-6v-7zM4 4h6v7H4V4zm10 0h6v7h-6V4z" />
+          </svg>
           Dashboard
-
         </a>
 
         <a routerLink="/app/coa" routerLinkActive="active">
-
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/></svg>
-
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z" />
+          </svg>
           Chart of Accounts
-
         </a>
-
       </div>
 
 
 
       <div class="nav-section">
-
         <span class="nav-section-label">Money</span>
-
         <div class="nav-group" [class.nav-group--open]="transactionsOpen()">
-
           <button type="button" class="nav-group-toggle" (click)="toggleTransactions()">
-
             <span class="nav-group-label">
-
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 15h2v2H7v-2zm0-4h2v2H7v-2zm4 4h2v2h-2v-2zm0-4h2v2h-2v-2zm4 4h2v2h-2v-2zm0-4h2v2h-2v-2zM5 5v14h14V5H5z"/></svg>
-
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M7 15h2v2H7v-2zm0-4h2v2H7v-2zm4 4h2v2h-2v-2zm0-4h2v2h-2v-2zm4 4h2v2h-2v-2zm0-4h2v2h-2v-2zM5 5v14h14V5H5z" />
+              </svg>
               Transactions
-
             </span>
 
-            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
-
+            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </button>
 
           @if (transactionsOpen()) {
 
-            <div class="nav-group-items">
-
-              <a routerLink="/app/transactions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-
-                All transactions
-
-              </a>
-
-              <a routerLink="/app/transactions/income" routerLinkActive="active">Income</a>
-
-              <a routerLink="/app/transactions/expense" routerLinkActive="active">Expense</a>
-
-              <a routerLink="/app/transactions/transfer" routerLinkActive="active">Transfer</a>
-
-            </div>
-
+          <div class="nav-group-items">
+            <a routerLink="/app/transactions" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              All transactions
+            </a>
+            <a routerLink="/app/transactions/income" routerLinkActive="active">Income</a>
+            <a routerLink="/app/transactions/expense" routerLinkActive="active">Expense</a>
+            <a routerLink="/app/transactions/transfer" routerLinkActive="active">Transfer</a>
+          </div>
           }
-
         </div>
 
-
-
         <div class="nav-group" [class.nav-group--open]="loansOpen()">
-
           <button type="button" class="nav-group-toggle" (click)="toggleLoans()">
-
             <span class="nav-group-label">
-
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v2H4v-2zm0 4h10v2H4v-2zM4 6h16v2H4V6z"/></svg>
-
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 10h16v2H4v-2zm0 4h10v2H4v-2zM4 6h16v2H4V6z" />
+              </svg>
               Loan
-
             </span>
 
-            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
-
+            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </button>
 
           @if (loansOpen()) {
-
-            <div class="nav-group-items">
-
-              <a routerLink="/app/loans/borrow" routerLinkActive="active">Borrow</a>
-
-              <a routerLink="/app/loans/repay" routerLinkActive="active">Repay</a>
-
-              <a routerLink="/app/loans/lend" routerLinkActive="active">Lend</a>
-
-              <a routerLink="/app/loans/collect" routerLinkActive="active">Collect</a>
-
-            </div>
-
+          <div class="nav-group-items">
+            <a routerLink="/app/loans/borrow" routerLinkActive="active">Borrow</a>
+            <a routerLink="/app/loans/repay" routerLinkActive="active">Repay</a>
+            <a routerLink="/app/loans/lend" routerLinkActive="active">Lend</a>
+            <a routerLink="/app/loans/collect" routerLinkActive="active">Collect</a>
+          </div>
           }
-
         </div>
-
       </div>
 
 
 
       <div class="nav-section">
-
         <span class="nav-section-label">Analytics</span>
-
         <div class="nav-group" [class.nav-group--open]="reportsOpen()">
-
           <button type="button" class="nav-group-toggle" (click)="toggleReports()">
-
             <span class="nav-group-label">
-
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V10h4v10H6zm7 0V4h4v16h-4zm7 0v-7h4v7h-4z"/></svg>
-
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 20V10h4v10H6zm7 0V4h4v16h-4zm7 0v-7h4v7h-4z" />
+              </svg>
               Reports
-
             </span>
 
-            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
-
+            <svg class="nav-chevron" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 10l5 5 5-5z" />
+            </svg>
           </button>
 
           @if (reportsOpen()) {
-
-            <div class="nav-group-items">
-
-              <a routerLink="/app/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-
-                All reports
-
-              </a>
-
-              <a routerLink="/app/reports/cashflow" routerLinkActive="active">Cashflow</a>
-
-              <a routerLink="/app/reports/balance" routerLinkActive="active">Balance</a>
-
-              <a routerLink="/app/reports/account-statement" routerLinkActive="active">Account statement</a>
-
-              <a routerLink="/app/reports/monthly-cashflow" routerLinkActive="active">Monthly cashflow</a>
-
-            </div>
-
+          <div class="nav-group-items">
+            <a routerLink="/app/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              All reports
+            </a>
+            <a routerLink="/app/reports/cashflow" routerLinkActive="active">Cashflow</a>
+            <a routerLink="/app/reports/balance" routerLinkActive="active">Balance</a>
+            <a routerLink="/app/reports/account-statement" routerLinkActive="active">Account statement</a>
+            <a routerLink="/app/reports/monthly-cashflow" routerLinkActive="active">Monthly cashflow</a>
+          </div>
           }
-
         </div>
-
       </div>
-
     </nav>
 
 
 
     <div class="sidebar-footer">
-
       <button type="button" class="sidebar-logout" (click)="logout()">
-
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17v-2h8v-7h-8V6l-5 5.5L10 17zM4 4h2v16H4V4z"/></svg>
-
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 17v-2h8v-7h-8V6l-5 5.5L10 17zM4 4h2v16H4V4z" />
+        </svg>
         Logout
-
       </button>
-
     </div>
-
   </aside>
 
 
 
   <div class="app-main">
-
     <header class="app-topbar">
-
       @if (user(); as u) {
+      <div class="topbar-profile" [class.topbar-profile--open]="profileMenuOpen()">
+        <button type="button" class="topbar-profile-trigger" (click)="toggleProfileMenu($event)"
+          [attr.aria-expanded]="profileMenuOpen()" aria-haspopup="menu">
+          <div class="avatar">{{ u.firstName.charAt(0) }}</div>
+          <span class="topbar-profile-name">{{ displayName() }}</span>
+          <svg class="topbar-profile-chevron" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 10l5 5 5-5z" />
+          </svg>
+        </button>
 
-        <div class="topbar-profile" [class.topbar-profile--open]="profileMenuOpen()">
 
-          <button
-            type="button"
-            class="topbar-profile-trigger"
-            (click)="toggleProfileMenu($event)"
-            [attr.aria-expanded]="profileMenuOpen()"
-            aria-haspopup="menu"
-          >
 
-            <div class="avatar">{{ u.firstName.charAt(0) }}</div>
+        @if (profileMenuOpen()) {
 
-            <span class="topbar-profile-name">{{ displayName() }}</span>
+        <div class="topbar-profile-menu" role="menu">
+          <a routerLink="/app/profile" role="menuitem" class="topbar-menu-item" (click)="closeProfileMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z" />
+            </svg>
+            Profile
+          </a>
 
-            <svg class="topbar-profile-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
-
+          <div class="topbar-menu-divider" role="separator"></div>
+          <button type="button" role="menuitem" class="topbar-menu-item topbar-menu-item--danger" (click)="logoutFromMenu()">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10 17v-2h8v-7h-8V6l-5 5.5L10 17zM4 4h2v16H4V4z" />
+            </svg>
+            Logout
           </button>
-
-
-
-          @if (profileMenuOpen()) {
-
-            <div class="topbar-profile-menu" role="menu">
-
-              <a routerLink="/app/profile" role="menuitem" class="topbar-menu-item" (click)="closeProfileMenu()">
-
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4 0-7 2-7 4v1h14v-1c0-2-3-4-7-4z"/></svg>
-
-                Profile
-
-              </a>
-
-              <div class="topbar-menu-divider" role="separator"></div>
-
-              <button type="button" role="menuitem" class="topbar-menu-item topbar-menu-item--danger" (click)="logoutFromMenu()">
-
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17v-2h8v-7h-8V6l-5 5.5L10 17zM4 4h2v16H4V4z"/></svg>
-
-                Logout
-
-              </button>
-
-            </div>
-
-          }
-
         </div>
-
+        }
+      </div>
       }
-
     </header>
 
 
 
     <main class="app-content">
-
       <router-outlet />
-
     </main>
-
   </div>
-
 </div>
