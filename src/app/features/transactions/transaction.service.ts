@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { PagedResult } from '../../core/api.model';
 import { ApiEndpoints, apiUrl } from '../../core/api/api-endpoints';
 import { ApiService } from '../../core/http/api.service';
+import { FinancialYear } from '../financial-years/financial-year.model';
+import { FinancialYearService } from '../financial-years/financial-year.service';
 import {
   Coa,
   CreateTransactionRequest,
-  FinancialYear,
   TransactionListItem,
   TransactionListQuery,
   TransactionType
@@ -16,9 +17,10 @@ import {
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
   private readonly api = inject(ApiService);
+  private readonly financialYearService = inject(FinancialYearService);
 
   getFinancialYears(): Observable<FinancialYear[]> {
-    return this.api.get<FinancialYear[]>(ApiEndpoints.financialYears);
+    return this.financialYearService.getAll();
   }
 
   getTransactionTypes(): Observable<TransactionType[]> {

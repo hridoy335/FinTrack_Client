@@ -12,6 +12,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { finalize, map } from 'rxjs';
 
 import { CoaQuickAddComponent } from '../coa/coa-quick-add.component';
+import { pickDefaultFinancialYearId } from '../financial-years/financial-year.util';
 import {
   TRANSACTION_FORM_MODES,
   TransactionFormMode
@@ -91,9 +92,9 @@ export class TransactionFormComponent {
 
     effect(() => {
       const years = this.years();
-      const current = years.find((y) => y.isActive && !y.isClosed) ?? years[0];
-      if (current && this.form.controls.financialYearId.value === 0) {
-        this.form.patchValue({ financialYearId: current.id }, { emitEvent: false });
+      const defaultId = pickDefaultFinancialYearId(years);
+      if (defaultId != null && this.form.controls.financialYearId.value === 0) {
+        this.form.patchValue({ financialYearId: defaultId }, { emitEvent: false });
       }
     });
 

@@ -52,29 +52,7 @@ export interface AccountBalanceItem {
 
 
 
-export interface FinancialYear {
-
-  id: number;
-
-  userInfoId: number;
-
-  year: number;
-
-  name: string;
-
-  startDate: string;
-
-  endDate: string;
-
-  isActive: boolean;
-
-  isClosed: boolean;
-
-  createdDate: string;
-
-  updatedDate?: string | null;
-
-}
+export type { FinancialYear } from '../financial-years/financial-year.model';
 
 
 

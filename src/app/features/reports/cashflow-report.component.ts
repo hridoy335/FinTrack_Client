@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { pickDefaultFinancialYearId } from '../financial-years/financial-year.util';
 import { ReportService } from './report.service';
 import { formatReportDate } from './report.util';
 
@@ -64,15 +65,15 @@ export class CashflowReportComponent {
   protected readonly effectiveYearId = computed(() => {
     const selected = this.selectedYearId();
     if (selected) return selected;
-    const years = this.years();
-    return years.find((y) => y.isActive && !y.isClosed)?.id ?? years[0]?.id ?? null;
+    return pickDefaultFinancialYearId(this.years());
   });
 
   constructor() {
     effect(() => {
       const years = this.years();
       if (years.length && !this.selectedYearId()) {
-        const current = years.find((y) => y.isActive && !y.isClosed) ?? years[0];
+        const defaultId = pickDefaultFinancialYearId(years);
+        const current = years.find((y) => y.id === defaultId) ?? years[0];
         if (current) {
           this.selectedYearId.set(current.id);
           this.fromDate.set(current.startDate.slice(0, 10));

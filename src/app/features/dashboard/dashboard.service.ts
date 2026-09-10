@@ -3,16 +3,19 @@ import { forkJoin, map, Observable } from 'rxjs';
 
 import { ApiEndpoints, apiUrl } from '../../core/api/api-endpoints';
 import { ApiService } from '../../core/http/api.service';
+import { FinancialYear } from '../financial-years/financial-year.model';
+import { FinancialYearService } from '../financial-years/financial-year.service';
 import { CashflowReport } from '../reports/report.model';
-import { DashboardData, ExpenseCategoryItem, FinancialYear, RecentTransaction } from './dashboard.model';
+import { DashboardData, ExpenseCategoryItem, RecentTransaction } from './dashboard.model';
 import { currentMonthDateRange } from './dashboard.util';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private readonly api = inject(ApiService);
+  private readonly financialYearService = inject(FinancialYearService);
 
   getFinancialYears(): Observable<FinancialYear[]> {
-    return this.api.get<FinancialYear[]>(ApiEndpoints.financialYears);
+    return this.financialYearService.getAll();
   }
 
   getDashboard(financialYearId?: number | null): Observable<DashboardData> {

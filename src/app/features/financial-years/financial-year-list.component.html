@@ -1,0 +1,128 @@
+<div class="fy-page">
+  <header class="fy-header">
+    <div>
+      <h1>Financial Years</h1>
+      <p>Manage your financial years. Create the next year when you’re ready to move forward.</p>
+    </div>
+    <button
+      type="button"
+      class="ft-btn ft-btn--primary"
+      [disabled]="creating() || loading()"
+      (click)="createNext()"
+    >
+      {{ creating() ? 'Creating…' : 'Create next year' }}
+    </button>
+  </header>
+
+  @if (successMessage()) {
+    <p class="ft-alert ft-alert--success">{{ successMessage() }}</p>
+  }
+  @if (errorMessage()) {
+    <p class="ft-alert ft-alert--error">{{ errorMessage() }}</p>
+  }
+
+  @if (loadError()) {
+    <div class="fy-error">
+      <p class="ft-alert ft-alert--error">{{ loadError() }}</p>
+      <button type="button" class="ft-btn ft-btn--secondary" (click)="retry()">Try again</button>
+    </div>
+  } @else if (loading()) {
+    <div class="fy-loading">Loading financial years…</div>
+  } @else {
+    @if (editingId(); as editId) {
+      <section class="fy-card fy-edit-card">
+        <h2>Edit financial year</h2>
+        <form [formGroup]="editForm" (ngSubmit)="submitEdit()">
+          <div class="fy-form-grid">
+            <div class="ft-field">
+              <label for="fyYear">Year</label>
+              <input id="fyYear" formControlName="year" />
+            </div>
+            <div class="ft-field">
+              <label for="fyName">Name</label>
+              <input id="fyName" formControlName="name" placeholder="e.g. FY 2027" />
+            </div>
+            <div class="ft-field">
+              <label for="fyStart">Start date</label>
+              <input id="fyStart" type="date" formControlName="startDate" />
+            </div>
+            <div class="ft-field">
+              <label for="fyEnd">End date</label>
+              <input id="fyEnd" type="date" formControlName="endDate" />
+            </div>
+          </div>
+
+          <label class="fy-closed-toggle">
+            <input type="checkbox" formControlName="isClosed" />
+            Mark as closed
+          </label>
+          @if (editingIsCurrent()) {
+            <p class="fy-hint">The current financial year cannot be closed.</p>
+          }
+
+          <div class="fy-edit-actions">
+            <button type="submit" class="ft-btn ft-btn--primary" [disabled]="submitting()">
+              {{ submitting() ? 'Saving…' : 'Save changes' }}
+            </button>
+            <button type="button" class="ft-btn ft-btn--secondary" (click)="cancelEdit()">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </section>
+    }
+
+    <section class="fy-card">
+      @if (years().length === 0) {
+        <div class="fy-empty">
+          <p>No financial years yet.</p>
+          <button
+            type="button"
+            class="ft-btn ft-btn--primary"
+            [disabled]="creating()"
+            (click)="createNext()"
+          >
+            Create next year
+          </button>
+        </div>
+      } @else {
+        <div class="fy-table-wrap">
+          <table class="fy-table">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Name</th>
+                <th>Start date</th>
+                <th>End date</th>
+                <th>Status</th>
+                <th class="fy-table-actions">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (year of years(); track year.id) {
+                <tr [class.fy-row--editing]="editingId() === year.id">
+                  <td>{{ year.year }}</td>
+                  <td>
+                    <strong>{{ year.name }}</strong>
+                  </td>
+                  <td>{{ formatDate(year.startDate) }}</td>
+                  <td>{{ formatDate(year.endDate) }}</td>
+                  <td>
+                    <span [class]="statusClass(year)">{{ statusLabel(year) }}</span>
+                  </td>
+                  <td class="fy-table-actions">
+                    @if (year.canEdit) {
+                      <button type="button" class="fy-action" (click)="startEdit(year)">Edit</button>
+                    } @else {
+                      <span class="fy-muted">—</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

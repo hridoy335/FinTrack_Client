@@ -109,6 +109,13 @@ export const routes: Routes = [
           import('./features/coa/coa-list.component').then((m) => m.CoaListComponent)
       },
       {
+        path: 'financial-years',
+        loadComponent: () =>
+          import('./features/financial-years/financial-year-list.component').then(
+            (m) => m.FinancialYearListComponent
+          )
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent)

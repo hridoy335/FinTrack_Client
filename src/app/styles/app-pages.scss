@@ -1818,3 +1818,210 @@ app-monthly-cashflow-report {
     grid-template-columns: 1fr;
   }
 }
+
+/* Financial Years */
+
+app-financial-year-list {
+  display: block;
+  width: 100%;
+}
+
+.fy-page {
+  width: 100%;
+}
+
+.fy-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+
+  h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.625rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+}
+
+.fy-loading,
+.fy-error {
+  padding: 2rem 0;
+}
+
+.fy-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.fy-card {
+  background: #fff;
+  border: 1px solid #e8edf2;
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.fy-edit-card {
+  padding: 1.25rem 1.35rem;
+
+  h2 {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+}
+
+.fy-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.fy-closed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+
+  input {
+    accent-color: #16a34a;
+  }
+}
+
+.fy-hint {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.fy-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.fy-empty {
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  p {
+    margin: 0;
+    color: #64748b;
+  }
+}
+
+.fy-table-wrap {
+  overflow-x: auto;
+}
+
+.fy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  th,
+  td {
+    padding: 0.75rem 1.15rem;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #fcfdfe;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.fy-row--editing {
+  background: #f0fdf4;
+}
+
+.fy-table-actions {
+  width: 100px;
+  text-align: right;
+}
+
+.fy-action {
+  border: 0;
+  background: transparent;
+  color: #16a34a;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.35rem;
+  border-radius: 6px;
+
+  &:hover {
+    background: #ecfdf5;
+  }
+}
+
+.fy-muted {
+  color: #cbd5e1;
+}
+
+.fy-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #475569;
+
+  &--current {
+    background: #ecfdf5;
+    color: #15803d;
+  }
+
+  &--active {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  &--closed {
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+
+  &--upcoming {
+    background: #fff7ed;
+    color: #c2410c;
+  }
+}
+
+@media (max-width: 720px) {
+  .fy-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

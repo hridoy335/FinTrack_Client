@@ -16,7 +16,12 @@ export const ApiEndpoints = {
     byId: (id: number | string) => `/api/UserInfos/${id}`
   },
 
-  financialYears: '/api/FinancialYears',
+  financialYears: {
+    root: '/api/FinancialYears',
+    current: '/api/FinancialYears/current',
+    next: '/api/FinancialYears/next',
+    byId: (id: number | string) => `/api/FinancialYears/${id}`
+  },
   accountTypes: '/api/AccountTypes',
   transactionTypes: '/api/TransactionTypes',
 

@@ -1,17 +1,12 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 import { rxResource } from '@angular/core/rxjs-interop';
-
 import { of } from 'rxjs';
 
-
-
 import { AuthService } from '../../core/auth/auth.service';
-
+import { pickDefaultFinancialYearId } from '../financial-years/financial-year.util';
 import { DashboardService } from './dashboard.service';
 import { txAmountPrefix, txIcon, txRelativeDate } from './dashboard.util';
 
@@ -91,89 +86,68 @@ export class DashboardComponent {
 
   protected readonly selectedYearId = signal<number | null>(null);
 
-
-
   protected readonly yearsResource = rxResource({
-
     stream: () => this.dashboardService.getFinancialYears()
-
   });
-
-
-
-  protected readonly dashboardResource = rxResource({
-
-    params: () => ({ financialYearId: this.selectedYearId() }),
-
-    stream: ({ params }) => this.dashboardService.getDashboard(params.financialYearId)
-
-  });
-
-
-
-  protected readonly transactionsResource = rxResource({
-
-    params: () => ({ financialYearId: this.effectiveYearId() }),
-
-    stream: ({ params }) => {
-
-      if (params.financialYearId == null) {
-
-        return of([]);
-
-      }
-
-      return this.dashboardService.getRecentTransactions(params.financialYearId);
-
-    }
-
-  });
-
-
 
   protected readonly years = computed(() => this.yearsResource.value() ?? []);
 
+  protected readonly effectiveYearId = computed(() => {
+    const selected = this.selectedYearId();
+    if (selected != null) return selected;
+    return pickDefaultFinancialYearId(this.years());
+  });
+
+  protected readonly dashboardResource = rxResource({
+    params: () => ({ financialYearId: this.effectiveYearId() }),
+    stream: ({ params }) => {
+      if (params.financialYearId == null) {
+        return of(undefined);
+      }
+      return this.dashboardService.getDashboard(params.financialYearId);
+    }
+  });
+
+  protected readonly transactionsResource = rxResource({
+    params: () => ({ financialYearId: this.effectiveYearId() }),
+    stream: ({ params }) => {
+      if (params.financialYearId == null) {
+        return of([]);
+      }
+      return this.dashboardService.getRecentTransactions(params.financialYearId);
+    }
+  });
+
   protected readonly dashboard = computed(() => this.dashboardResource.value());
-
   protected readonly transactions = computed(() => this.transactionsResource.value() ?? []);
-
   protected readonly loading = computed(
-
-    () => this.dashboardResource.isLoading() || this.yearsResource.isLoading()
-
+    () => this.yearsResource.isLoading() || this.dashboardResource.isLoading()
   );
-
   protected readonly transactionsLoading = computed(() => this.transactionsResource.isLoading());
 
-
-
   protected readonly loadError = computed(() => {
-
-    const err = this.dashboardResource.error() ?? this.yearsResource.error();
-
+    const err = this.yearsResource.error() ?? this.dashboardResource.error();
     return err instanceof Error ? err.message : err ? String(err) : null;
-
   });
-
-
-
-  protected readonly effectiveYearId = computed(
-
-    () => this.selectedYearId() ?? this.dashboard()?.financialYearId ?? null
-
-  );
-
-
 
   protected readonly selectedYearLabel = computed(() => {
-
     const id = this.effectiveYearId();
-
     const year = this.years().find((y) => y.id === id);
-
     return year?.name ?? (this.dashboard() ? `FY ${this.dashboard()!.financialYear}` : 'This year');
-
   });
+
+  constructor() {
+    // Resolve current (or active) FY before dashboard/transactions load.
+    effect(() => {
+      const years = this.years();
+      if (years.length && this.selectedYearId() == null) {
+        const defaultId = pickDefaultFinancialYearId(years);
+        if (defaultId != null) {
+          this.selectedYearId.set(defaultId);
+        }
+      }
+    });
+  }
 
 
 
@@ -277,42 +251,30 @@ export class DashboardComponent {
 
 
 
+  /** Tip derived only from this month's income, expense, and net savings KPIs. */
   protected readonly smartTip = computed(() => {
-
     const d = this.dashboard();
-
     if (!d) return '';
 
+    const income = d.incomeThisMonth;
+    const expense = d.expenseThisMonth;
+    const net = d.netThisMonth;
 
-
-    if (d.netThisMonth > 0 && d.incomeThisMonth > 0) {
-
-      const pct = Math.round((d.netThisMonth / d.incomeThisMonth) * 100);
-
-      return `Smart Tip: You saved ${pct}% of your income this month. Great job — keep it up and save more!`;
-
-    }
-
-
-
-    if (d.expenseThisMonth === 0 && d.incomeThisMonth === 0) {
-
+    if (income === 0 && expense === 0) {
       return 'Smart Tip: Add your first transaction to start tracking income and expenses.';
-
     }
 
-
-
-    if (d.netThisMonth < 0) {
-
+    if (net < 0) {
       return 'Smart Tip: Your expenses exceeded income this month. Review spending categories to get back on track.';
-
     }
 
+    if (net > 0 && income > 0) {
+      const pct = Math.round((net / income) * 100);
+      return `Smart Tip: You saved ${pct}% of your income this month. Great job — keep it up and save more!`;
+    }
 
-
-    return 'Smart Tip: Track every transaction to unlock richer insights on your dashboard.';
-
+    // Net savings is exactly 0 (income === expense, both > 0)
+    return 'Smart Tip: Income and expenses balanced this month. A small cut in spending can grow your savings.';
   });
 
 

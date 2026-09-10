@@ -34,6 +34,14 @@ export class ApiService {
       .pipe(map((r) => this.unwrap(r)));
   }
 
+  postWithMessage<T>(path: string, body: unknown = {}): Observable<{ data: T; message: string }> {
+    return this.http.post<ApiResponse<T>>(`${this.base}${path}`, body).pipe(map((r) => this.unwrapWithMessage(r)));
+  }
+
+  putWithMessage<T>(path: string, body: unknown): Observable<{ data: T; message: string }> {
+    return this.http.put<ApiResponse<T>>(`${this.base}${path}`, body).pipe(map((r) => this.unwrapWithMessage(r)));
+  }
+
   getPaged<T>(path: string): Observable<PagedResult<T>> {
     return this.http.get<ApiResponse<T>>(`${this.base}${path}`).pipe(
       map((r) => {
@@ -53,5 +61,15 @@ export class ApiService {
       throw new Error(response.message || 'Request failed.');
     }
     return response.data;
+  }
+
+  private unwrapWithMessage<T>(response: ApiResponse<T>): { data: T; message: string } {
+    if (!response.success) {
+      throw new Error(response.message || 'Request failed.');
+    }
+    return {
+      data: response.data,
+      message: response.message || ''
+    };
   }
 }

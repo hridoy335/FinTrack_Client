@@ -3,20 +3,22 @@ import { Observable } from 'rxjs';
 
 import { ApiEndpoints, apiUrl } from '../../core/api/api-endpoints';
 import { ApiService } from '../../core/http/api.service';
+import { FinancialYear } from '../financial-years/financial-year.model';
+import { FinancialYearService } from '../financial-years/financial-year.service';
 import {
   AccountStatementReport,
   BalanceReport,
   CashflowReport,
-  FinancialYear,
   MonthlyCashflowReport
 } from './report.model';
 
 @Injectable({ providedIn: 'root' })
 export class ReportService {
   private readonly api = inject(ApiService);
+  private readonly financialYearService = inject(FinancialYearService);
 
   getFinancialYears(): Observable<FinancialYear[]> {
-    return this.api.get<FinancialYear[]>(ApiEndpoints.financialYears);
+    return this.financialYearService.getAll();
   }
 
   getCashflow(params: {

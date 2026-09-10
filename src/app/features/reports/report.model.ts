@@ -1,12 +1,6 @@
-export interface FinancialYear {
-  id: number;
-  year: number;
-  name: string;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-  isClosed: boolean;
-}
+import { FinancialYear } from '../financial-years/financial-year.model';
+
+export type { FinancialYear };
 
 export interface CashflowCategoryItem {
   coaId: number;

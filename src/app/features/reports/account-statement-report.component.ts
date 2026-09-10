@@ -6,6 +6,7 @@ import { EMPTY, forkJoin } from 'rxjs';
 
 import { AuthService } from '../../core/auth/auth.service';
 import { CoaService } from '../coa/coa.service';
+import { pickDefaultFinancialYearId } from '../financial-years/financial-year.util';
 import { ReportService } from './report.service';
 import { formatReportDate } from './report.util';
 
@@ -79,8 +80,7 @@ export class AccountStatementReportComponent {
   protected readonly effectiveYearId = computed(() => {
     const selected = this.selectedYearId();
     if (selected) return selected;
-    const years = this.years();
-    return years.find((y) => y.isActive && !y.isClosed)?.id ?? years[0]?.id ?? null;
+    return pickDefaultFinancialYearId(this.years());
   });
 
   constructor() {
@@ -88,7 +88,8 @@ export class AccountStatementReportComponent {
       const years = this.years();
       const coas = this.coaOptions();
       if (years.length && !this.selectedYearId()) {
-        const current = years.find((y) => y.isActive && !y.isClosed) ?? years[0];
+        const defaultId = pickDefaultFinancialYearId(years);
+        const current = years.find((y) => y.id === defaultId) ?? years[0];
         if (current) {
           this.selectedYearId.set(current.id);
           this.fromDate.set(current.startDate.slice(0, 10));

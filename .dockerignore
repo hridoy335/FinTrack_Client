@@ -1,0 +1,10 @@
+**/.git
+**/.angular
+**/node_modules
+**/dist
+**/.vscode
+**/.idea
+**/coverage
+**/*.md
+.env
+.env.*

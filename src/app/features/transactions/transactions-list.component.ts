@@ -11,7 +11,7 @@ import { of } from 'rxjs';
 
 
 import { AuthService } from '../../core/auth/auth.service';
-
+import { pickDefaultFinancialYearId } from '../financial-years/financial-year.util';
 import { TransactionService } from './transaction.service';
 import { txAmountPrefix, txIcon, txRelativeDate } from './transaction.util';
 
@@ -144,19 +144,10 @@ export class TransactionsListComponent {
 
 
   protected readonly effectiveYearId = computed(() => {
-
     const selected = this.selectedYearId();
-
     if (selected != null) return selected;
 
-
-
-    const years = this.years();
-
-    const current = years.find((y) => y.isActive && !y.isClosed);
-
-    return current?.id ?? years[0]?.id ?? null;
-
+    return pickDefaultFinancialYearId(this.years());
   });
 
 
